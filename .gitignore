@@ -1,0 +1,8 @@
+.venv/
+.cache/
+__pycache__/
+*.pyc
+*.parquet
+*.png
+.env
+daemon_state.json
