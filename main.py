@@ -166,11 +166,12 @@ def test_gemini(args):
     notifier = UniversalNotifier(ntfy_topic=target_topic)
 
     if not llm_result or not llm_result.get("rationale"):
-        print("[!] Gemini API call failed to produce analysis. Check API key permissions.")
+        err = getattr(analyst, "last_error", None) or "Model returned empty response or unparseable JSON"
+        print(f"[!] Gemini API call failed to produce analysis: {err}")
         notifier.send_message(
-            "⚠️ *Gemini Call Failed*\n"
-            "The Gemini API key was loaded, but the API request failed.\n"
-            "Please check that your key from https://aistudio.google.com/app/apikey is active.",
+            f"⚠️ *Gemini API Call Failed*\n\n"
+            f"*Exact Error*: `{err}`\n\n"
+            "If this error says 'Generative Language API has not been used', visit the Google Cloud Console link in the error to enable it.",
             title="⚠️ Gemini API Call Failed"
         )
         return

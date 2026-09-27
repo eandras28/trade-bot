@@ -61,6 +61,38 @@ ENERGY_LEXICON = {
 }
 
 
+def parse_llm_json(raw_text: str) -> Dict[str, Any]:
+    """Parse JSON from LLM output, stripping markdown code blocks if present."""
+    if not raw_text:
+        raise ValueError("Empty response text from LLM")
+    cleaned = raw_text.strip()
+    
+    # Try direct parse
+    try:
+        return json.loads(cleaned)
+    except Exception:
+        pass
+        
+    # Extract from markdown code block ```json ... ```
+    if "```" in cleaned:
+        for block in cleaned.split("```"):
+            block = block.strip()
+            if block.startswith("json"):
+                block = block[4:].strip()
+            try:
+                return json.loads(block)
+            except Exception:
+                continue
+                
+    # Search for first { and last }
+    start = cleaned.find("{")
+    end = cleaned.rfind("}")
+    if start != -1 and end != -1 and end > start:
+        return json.loads(cleaned[start:end+1])
+        
+    raise ValueError(f"Could not parse valid JSON from response: {cleaned[:150]}")
+
+
 class GeminiEnergyAnalyst:
     """LLM Contextual Reasoning for Energy News using Google Gemini."""
 
@@ -69,21 +101,51 @@ class GeminiEnergyAnalyst:
         self.api_key = raw_key.strip("'\" \n\r\t")
         self.client = None
         self.init_error = None
+        self.last_error = None
 
-        if not GENAI_AVAILABLE:
-            self.init_error = "The google-genai package is not installed in the environment."
-        elif not self.api_key:
+        if not self.api_key:
             self.init_error = "No API key provided."
         else:
-            try:
-                self.client = genai.Client(api_key=self.api_key)
-            except Exception as e:
-                self.init_error = str(e)
-                print(f"[!] Could not initialize Gemini Client: {e}")
+            if GENAI_AVAILABLE:
+                try:
+                    self.client = genai.Client(api_key=self.api_key)
+                except Exception as e:
+                    self.init_error = f"SDK Client init error: {e}"
+                    print(f"[!] Could not initialize Gemini Client: {e}")
 
     @property
     def is_active(self) -> bool:
-        return self.client is not None
+        return bool(self.api_key)
+
+    def _call_rest_api(self, model_name: str, prompt: str) -> Dict[str, Any]:
+        """Direct REST fallback to Google Generative Language API."""
+        import requests
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={self.api_key}"
+        payload = {
+            "contents": [{"parts": [{"text": prompt}]}],
+            "generationConfig": {
+                "temperature": 0.1,
+                "responseMimeType": "application/json"
+            }
+        }
+        resp = requests.post(url, headers={"Content-Type": "application/json"}, json=payload, timeout=25)
+        if resp.status_code != 200:
+            try:
+                err_data = resp.json().get("error", {})
+                msg = err_data.get("message") or resp.text
+                status = err_data.get("status", "")
+                raise RuntimeError(f"HTTP {resp.status_code} ({status}): {msg}")
+            except Exception as parse_err:
+                if "HTTP " in str(parse_err):
+                    raise parse_err
+                raise RuntimeError(f"HTTP {resp.status_code}: {resp.text}")
+
+        data = resp.json()
+        candidates = data.get("candidates", [])
+        if not candidates:
+            raise RuntimeError(f"No candidates in Gemini response: {data}")
+        text = candidates[0].get("content", {}).get("parts", [{}])[0].get("text", "")
+        return parse_llm_json(text)
 
     def analyze_news_batch(self, target_name: str, articles: List[Dict[str, Any]]) -> Dict[str, Any]:
         """
@@ -116,32 +178,46 @@ Respond strictly with a JSON object in this format:
   "rationale": "<A sharp 1-2 sentence executive explanation of the fundamental reason>"
 }}
 """
-        # Try available Google Gemini models, prioritizing gemini-3.8-flash
-        candidate_models = ['gemini-3.8-flash', 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-pro']
-        last_error = None
+        # Valid Google Gemini models (Gemini 2.0 Flash is Google's newest and fastest)
+        candidate_models = ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-pro']
+        self.last_error = None
 
         for model_name in candidate_models:
-            try:
-                response = self.client.models.generate_content(
-                    model=model_name,
-                    contents=prompt,
-                    config=types.GenerateContentConfig(
-                        response_mime_type="application/json",
-                        temperature=0.1
+            # 1. Try google-genai SDK if available
+            if self.client is not None:
+                try:
+                    response = self.client.models.generate_content(
+                        model=model_name,
+                        contents=prompt,
+                        config=types.GenerateContentConfig(
+                            response_mime_type="application/json",
+                            temperature=0.1
+                        )
                     )
-                )
-                data = json.loads(response.text)
+                    data = parse_llm_json(response.text)
+                    return {
+                        "score": round(float(data.get("score", 0.0)), 3),
+                        "regime": data.get("regime", "NEUTRAL"),
+                        "rationale": data.get("rationale", ""),
+                        "model_used": model_name
+                    }
+                except Exception as e:
+                    self.last_error = f"SDK {model_name} failed: {e}"
+
+            # 2. Direct REST API fallback
+            try:
+                data = self._call_rest_api(model_name, prompt)
                 return {
                     "score": round(float(data.get("score", 0.0)), 3),
                     "regime": data.get("regime", "NEUTRAL"),
                     "rationale": data.get("rationale", ""),
-                    "model_used": model_name
+                    "model_used": f"{model_name} (REST)"
                 }
             except Exception as e:
-                last_error = e
+                self.last_error = f"REST {model_name} failed: {e}"
                 continue
 
-        print(f"[!] Gemini analysis error across all models: {last_error}")
+        print(f"[!] Gemini analysis error across all models: {self.last_error}")
         return {}
 
 
