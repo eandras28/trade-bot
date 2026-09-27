@@ -2,9 +2,16 @@ name: 🛢️ Oil Bot 24/7 Cloud Scanner
 
 on:
   schedule:
-    # Runs every 30 minutes during US Market Hours (Mon-Fri)
-    - cron: '*/30 13-21 * * 1-5'
-  workflow_dispatch: # Allows manual trigger from GitHub UI
+    # Runs every 30 minutes Monday through Friday (13:00 - 22:00 UTC covers US Market Hours)
+    - cron: '*/30 13-22 * * 1-5'
+    # Also runs every 2 hours on weekends / off-market for major geopolitical/OPEC weekend news
+    - cron: '0 */2 * * 0,6'
+  workflow_dispatch:
+    inputs:
+      ntfy_topic:
+        description: 'Target ntfy topic (optional override)'
+        required: false
+        default: ''
 
 jobs:
   scan-and-alert:
@@ -28,6 +35,10 @@ jobs:
 
       - name: Run Market & News Scan
         env:
-          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          INPUT_TOPIC: ${{ github.event.inputs.ntfy_topic }}
+          SECRET_TOPIC: ${{ secrets.NTFY_TOPIC }}
         run: |
-          python main.py check-and-notify --ntfy "$NTFY_TOPIC"
+          # Use manual input if provided, else repository secret, else fallback to test topic
+          TARGET_TOPIC="${INPUT_TOPIC:-${SECRET_TOPIC:-test-oil-alert-check}}"
+          echo "Scanning market and pushing alerts to ntfy topic: $TARGET_TOPIC"
+          python main.py check-and-notify --ntfy "$TARGET_TOPIC"
