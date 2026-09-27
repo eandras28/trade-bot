@@ -33,12 +33,12 @@ jobs:
           pip install -r requirements.txt
           python -c "import nltk; nltk.download('vader_lexicon')"
 
-      - name: Run Market & News Scan
+      - name: Run Market & AI News Scan
         env:
           INPUT_TOPIC: ${{ github.event.inputs.ntfy_topic }}
           SECRET_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
-          # Use manual input if provided, else repository secret, else fallback to test topic
           TARGET_TOPIC="${INPUT_TOPIC:-${SECRET_TOPIC:-test-oil-alert-check}}"
           echo "Scanning market and pushing alerts to ntfy topic: $TARGET_TOPIC"
           python main.py check-and-notify --ntfy "$TARGET_TOPIC"

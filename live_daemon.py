@@ -57,9 +57,7 @@ class LiveDaemon:
             price = row["Price ($)"]
             decision = row["Combined Decision"]
             stop_loss = float(row["Stop Loss"].replace("$", ""))
-            
-            sym_news = sent_rep.get("symbols", {}).get(sym, {}).get("top_articles", [])
-            catalyst_text = f"\"{sym_news[0]['title']}\" ({sym_news[0]['publisher']})" if sym_news else "Macro commodity momentum"
+            rationale = row.get("Rationale", "Macro commodity momentum")
 
             last_signal = self.state["last_signals"].get(sym, "NONE")
 
@@ -73,7 +71,7 @@ class LiveDaemon:
                     price=price,
                     stop_loss=stop_loss,
                     target=target_price,
-                    catalyst=catalyst_text,
+                    catalyst=rationale,
                     tech_reason=f"Fast EMA > Slow EMA, RSI {row['RSI']}, Macro Crude Sentiment: {macro_score:+.2f}"
                 )
                 self.state["positions"][sym] = {
@@ -97,7 +95,7 @@ class LiveDaemon:
                     price=price,
                     stop_loss=None,
                     target=None,
-                    catalyst=catalyst_text,
+                    catalyst=rationale,
                     tech_reason=f"Regime breakdown. Return: {ret_pct:+.2f}%"
                 )
                 self.state["last_signals"][sym] = "EXIT"

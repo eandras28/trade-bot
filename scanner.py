@@ -62,9 +62,10 @@ class MarketScanner:
             else:
                 tech_status = "NEUTRAL"
 
-            # News Sentiment Score
+            # News Sentiment Score & Rationale
             news_info = sentiment_data.get("symbols", {}).get(symbol, {})
             sentiment_score = news_info.get("composite_score", 0.0)
+            rationale = news_info.get("rationale", "")
 
             # Combined AI Conviction Signal
             if tech_status in ["NEW BUY", "BULLISH"] and sentiment_score >= 0.15:
@@ -95,7 +96,8 @@ class MarketScanner:
                 "MACD": round(latest['macd'], 2),
                 "EMA 12/26": f"{latest['ema_fast']:.1f}/{latest['ema_slow']:.1f}",
                 "Stop Loss": f"${stop_loss:.2f}",
-                "Target": f"${take_profit:.2f}" if take_profit else "Trailing Stop"
+                "Target": f"${take_profit:.2f}" if take_profit else "Trailing Stop",
+                "Rationale": rationale
             })
 
         return {
@@ -108,28 +110,26 @@ class MarketScanner:
         scan_output = self.scan_universe(include_news=True)
         results = scan_output["table"]
         sent_rep = scan_output["sentiment_report"]
+        engine_mode = sent_rep.get("engine_mode", "Standard")
 
         print("\n" + "=" * 105)
-        print(f"       🛢️  OIL TRADING BOT: MULTI-FACTOR SCANNER (MODE: {self.config.mode.upper()})")
+        print(f"       🛢️  OIL TRADING BOT: MULTI-FACTOR SCANNER [AI Engine: {engine_mode}]")
         print("=" * 105)
-        print(tabulate(results, headers="keys", tablefmt="fancy_grid"))
+        
+        # Display table without wide rationale column for neat terminal printing
+        display_table = [{k: v for k, v in r.items() if k != "Rationale"} for r in results]
+        print(tabulate(display_table, headers="keys", tablefmt="fancy_grid"))
 
         if sent_rep:
             macro_score = sent_rep.get("macro_score", 0.0)
-            print(f"\n🌍 MACRO CRUDE & GEOPOLITICAL SENTIMENT: {macro_score:+.3f} "
-                  f"({'🟢 BULLISH SUPPLY SQUEEZE' if macro_score > 0.1 else '🔴 BEARISH SURPLUS/EASING' if macro_score < -0.1 else '⚪ NEUTRAL'})")
+            macro_rationale = sent_rep.get("macro_rationale", "")
+            print(f"\n🌍 MACRO CRUDE SENTIMENT: {macro_score:+.3f} "
+                  f"({'🟢 BULLISH SQUEEZE' if macro_score > 0.1 else '🔴 BEARISH SURPLUS' if macro_score < -0.1 else '⚪ NEUTRAL'})")
+            if macro_rationale:
+                print(f"   💡 Rationale: {macro_rationale}")
 
-            print("\n📰 TOP BREAKING MACRO CATALYSTS:")
-            for a in sent_rep.get("top_macro_news", [])[:4]:
-                score_icon = "🟢" if a['score'] > 0.1 else "🔴" if a['score'] < -0.1 else "⚪"
-                print(f"  {score_icon} [{a['score']:+.2f}] {a['title']} ({a['publisher']})")
-
-            print("\n🗞️ KEY COMPANY/ETF HEADLINES:")
-            for sym, sdata in sent_rep.get("symbols", {}).items():
-                articles = sdata.get("top_articles", [])
-                if articles:
-                    top = articles[0]
-                    score_icon = "🟢" if top['score'] > 0.1 else "🔴" if top['score'] < -0.1 else "⚪"
-                    print(f"  • {sym} ({sdata['composite_score']:+.2f}): {score_icon} {top['title']} ({top['publisher']})")
+            print("\n📰 AI REASONING & CATALYSTS PER SYMBOL:")
+            for r in results:
+                print(f"  • {r['Symbol']}: {r['Combined Decision']} | {r['Rationale']}")
 
         print("=" * 105 + "\n")
