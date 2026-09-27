@@ -159,23 +159,35 @@ def test_gemini(args):
         print(f"  • {a['title']}")
 
     llm_result = analyst.analyze_news_batch("ExxonMobil (XOM)", articles)
-    print("\n[4] Gemini LLM Response:")
+    target_topic = args.ntfy or "buzi-bot"
+    notifier = UniversalNotifier(ntfy_topic=target_topic)
+
+    if not llm_result or not llm_result.get("rationale"):
+        print("[!] Gemini API call failed to produce analysis. Check API key permissions.")
+        notifier.send_message(
+            "⚠️ *Gemini Call Failed*\n"
+            "The Gemini API key was loaded, but the API request failed.\n"
+            "Please check that your key from https://aistudio.google.com/app/apikey is active.",
+            title="⚠️ Gemini API Call Failed"
+        )
+        return
+
+    model_used = llm_result.get("model_used", "gemini-1.5-flash")
+    print(f"\n[4] Gemini LLM Response ({model_used}):")
     print(f"  Score:    {llm_result.get('score', 0.0):+0.2f}")
     print(f"  Regime:   {llm_result.get('regime', 'N/A')}")
     print(f"  Rationale: {llm_result.get('rationale', 'N/A')}")
 
-    target_topic = args.ntfy or "buzi-bot"
     print(f"\n[5] Dispatching Gemini-generated alert to your phone via '{target_topic}'...")
-    notifier = UniversalNotifier(ntfy_topic=target_topic)
     notifier.send_trade_signal(
         symbol="XOM",
         action="BUY",
         price=160.59,
         stop_loss=150.56,
         target=176.64,
-        catalyst=llm_result.get("rationale", "OPEC quota discipline confirmed."),
+        catalyst=llm_result["rationale"],
         engine_name="Gemini LLM Contextual",
-        tech_reason="Fast EMA(12) > Slow EMA(26), RSI 48.9, Gemini Catalyst Confirmed"
+        tech_reason=f"Fast EMA(12) > Slow EMA(26), RSI 48.9, Gemini Catalyst [{model_used}]"
     )
     print(f"\n[✓] Successfully delivered Gemini-powered trade alert to your phone!")
 

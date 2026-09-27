@@ -108,24 +108,33 @@ Respond strictly with a JSON object in this format:
   "rationale": "<A sharp 1-2 sentence executive explanation of the fundamental reason>"
 }}
 """
-        try:
-            response = self.client.models.generate_content(
-                model='gemini-2.5-flash',
-                contents=prompt,
-                config=types.GenerateContentConfig(
-                    response_mime_type="application/json",
-                    temperature=0.1
+        # Try available Google AI Studio models in order of stability
+        candidate_models = ['gemini-1.5-flash', 'gemini-2.0-flash', 'gemini-1.5-pro']
+        last_error = None
+
+        for model_name in candidate_models:
+            try:
+                response = self.client.models.generate_content(
+                    model=model_name,
+                    contents=prompt,
+                    config=types.GenerateContentConfig(
+                        response_mime_type="application/json",
+                        temperature=0.1
+                    )
                 )
-            )
-            data = json.loads(response.text)
-            return {
-                "score": round(float(data.get("score", 0.0)), 3),
-                "regime": data.get("regime", "NEUTRAL"),
-                "rationale": data.get("rationale", "")
-            }
-        except Exception as e:
-            print(f"[!] Gemini analysis error: {e}")
-            return {}
+                data = json.loads(response.text)
+                return {
+                    "score": round(float(data.get("score", 0.0)), 3),
+                    "regime": data.get("regime", "NEUTRAL"),
+                    "rationale": data.get("rationale", ""),
+                    "model_used": model_name
+                }
+            except Exception as e:
+                last_error = e
+                continue
+
+        print(f"[!] Gemini analysis error across all models: {last_error}")
+        return {}
 
 
 class OilSentimentAnalyzer:
