@@ -108,8 +108,8 @@ Respond strictly with a JSON object in this format:
   "rationale": "<A sharp 1-2 sentence executive explanation of the fundamental reason>"
 }}
 """
-        # Try available Google AI Studio models in order of stability
-        candidate_models = ['gemini-1.5-flash', 'gemini-2.0-flash', 'gemini-1.5-pro']
+        # Try available Google Gemini models, prioritizing gemini-3.8-flash
+        candidate_models = ['gemini-3.8-flash', 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-pro']
         last_error = None
 
         for model_name in candidate_models:
