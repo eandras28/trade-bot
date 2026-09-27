@@ -140,10 +140,13 @@ def test_gemini(args):
     print("\n[1] Initializing Google Gemini LLM Client...")
     analyst = GeminiEnergyAnalyst(api_key=api_key)
     if not analyst.is_active:
-        print("[!] Failed to initialize Gemini. Check that your API key is valid.")
+        error_detail = analyst.init_error or "Unknown error"
+        print(f"[!] Failed to initialize Gemini: {error_detail}")
         notifier.send_message(
-            "⚠️ *Gemini Test Notice*\n"
-            "The Gemini Client failed to initialize. Please check that your API key is active and valid.",
+            f"⚠️ *Gemini Test Notice*\n"
+            f"The Gemini Client failed to initialize.\n"
+            f"*Reason*: `{error_detail}`\n\n"
+            "Please check that your key from https://aistudio.google.com/app/apikey is active.",
             title="⚠️ Gemini Key Invalid"
         )
         return

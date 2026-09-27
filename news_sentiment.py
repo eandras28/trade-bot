@@ -65,12 +65,20 @@ class GeminiEnergyAnalyst:
     """LLM Contextual Reasoning for Energy News using Google Gemini."""
 
     def __init__(self, api_key: Optional[str] = None):
-        self.api_key = api_key or os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
+        raw_key = api_key or os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY") or ""
+        self.api_key = raw_key.strip("'\" \n\r\t")
         self.client = None
-        if GENAI_AVAILABLE and self.api_key:
+        self.init_error = None
+
+        if not GENAI_AVAILABLE:
+            self.init_error = "The google-genai package is not installed in the environment."
+        elif not self.api_key:
+            self.init_error = "No API key provided."
+        else:
             try:
                 self.client = genai.Client(api_key=self.api_key)
             except Exception as e:
+                self.init_error = str(e)
                 print(f"[!] Could not initialize Gemini Client: {e}")
 
     @property
