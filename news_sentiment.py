@@ -117,10 +117,72 @@ class GeminiEnergyAnalyst:
     def is_active(self) -> bool:
         return bool(self.api_key)
 
-    def _call_rest_api(self, model_name: str, prompt: str) -> Dict[str, Any]:
+    def get_supported_models(self) -> List[tuple]:
+        """
+        Dynamically query Google's ModelService.ListModels to discover exactly
+        which models are provisioned and active for this specific API key.
+        Returns a list of (clean_model_name, api_version) tuples.
+        """
+        import requests
+        discovered = []
+        last_list_err = None
+
+        for api_ver in ["v1beta", "v1"]:
+            try:
+                url = f"https://generativelanguage.googleapis.com/{api_ver}/models?key={self.api_key}"
+                resp = requests.get(url, timeout=12)
+                if resp.status_code == 200:
+                    data = resp.json()
+                    for m in data.get("models", []):
+                        methods = m.get("supportedGenerationMethods", [])
+                        if "generateContent" in methods:
+                            name = m.get("name", "")
+                            if name.startswith("models/"):
+                                name = name[7:]
+                            discovered.append((name, api_ver))
+                    if discovered:
+                        break
+                else:
+                    try:
+                        err_msg = resp.json().get("error", {}).get("message") or resp.text
+                    except Exception:
+                        err_msg = resp.text
+                    last_list_err = f"{api_ver} HTTP {resp.status_code}: {err_msg}"
+            except Exception as e:
+                last_list_err = f"{api_ver} error: {e}"
+
+        if not discovered and last_list_err:
+            self.last_error = f"ListModels failed: {last_list_err}"
+
+        # Sort: prioritize flash models, then pro, favoring newer releases
+        def priority(item):
+            name, _ = item
+            score = 0
+            n_lower = name.lower()
+            if "flash" in n_lower:
+                score += 100
+            elif "pro" in n_lower:
+                score += 50
+            if "2.5" in name:
+                score += 40
+            elif "2.0" in name:
+                score += 30
+            elif "1.5" in name:
+                score += 20
+            if "latest" in n_lower:
+                score += 10
+            if "exp" in n_lower or "preview" in n_lower:
+                score -= 15
+            return -score
+
+        discovered.sort(key=priority)
+        return discovered
+
+    def _call_rest_api(self, model_name: str, prompt: str, api_ver: str = "v1beta") -> Dict[str, Any]:
         """Direct REST fallback to Google Generative Language API."""
         import requests
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={self.api_key}"
+        clean_name = model_name[7:] if model_name.startswith("models/") else model_name
+        url = f"https://generativelanguage.googleapis.com/{api_ver}/models/{clean_name}:generateContent?key={self.api_key}"
         payload = {
             "contents": [{"parts": [{"text": prompt}]}],
             "generationConfig": {
@@ -129,6 +191,12 @@ class GeminiEnergyAnalyst:
             }
         }
         resp = requests.post(url, headers={"Content-Type": "application/json"}, json=payload, timeout=25)
+        
+        # If model does not support responseMimeType (returns 400), retry without it
+        if resp.status_code == 400 and "responseMimeType" in resp.text:
+            payload["generationConfig"] = {"temperature": 0.1}
+            resp = requests.post(url, headers={"Content-Type": "application/json"}, json=payload, timeout=25)
+
         if resp.status_code != 200:
             try:
                 err_data = resp.json().get("error", {})
@@ -178,16 +246,28 @@ Respond strictly with a JSON object in this format:
   "rationale": "<A sharp 1-2 sentence executive explanation of the fundamental reason>"
 }}
 """
-        # Valid Google Gemini models (Gemini 2.0 Flash is Google's newest and fastest)
-        candidate_models = ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-pro']
-        self.last_error = None
+        # Discover actual available models for this specific API key
+        available = self.get_supported_models()
+        if not available:
+            print(f"[!] Warning: ListModels did not return models. Error: {self.last_error}")
+            available = [
+                ('gemini-2.0-flash', 'v1beta'),
+                ('gemini-1.5-flash', 'v1beta'),
+                ('gemini-1.5-flash-latest', 'v1beta'),
+                ('gemini-1.5-pro-latest', 'v1beta'),
+                ('gemini-pro', 'v1')
+            ]
+        else:
+            print(f"[✓] Discovered {len(available)} models for your key. Top choices: {[m[0] for m in available[:5]]}")
 
-        for model_name in candidate_models:
+        for model_name, api_ver in available[:6]:
+            clean_name = model_name[7:] if model_name.startswith("models/") else model_name
+
             # 1. Try google-genai SDK if available
             if self.client is not None:
                 try:
                     response = self.client.models.generate_content(
-                        model=model_name,
+                        model=clean_name,
                         contents=prompt,
                         config=types.GenerateContentConfig(
                             response_mime_type="application/json",
@@ -199,22 +279,22 @@ Respond strictly with a JSON object in this format:
                         "score": round(float(data.get("score", 0.0)), 3),
                         "regime": data.get("regime", "NEUTRAL"),
                         "rationale": data.get("rationale", ""),
-                        "model_used": model_name
+                        "model_used": clean_name
                     }
                 except Exception as e:
-                    self.last_error = f"SDK {model_name} failed: {e}"
+                    self.last_error = f"SDK {clean_name} failed: {e}"
 
             # 2. Direct REST API fallback
             try:
-                data = self._call_rest_api(model_name, prompt)
+                data = self._call_rest_api(clean_name, prompt, api_ver=api_ver)
                 return {
                     "score": round(float(data.get("score", 0.0)), 3),
                     "regime": data.get("regime", "NEUTRAL"),
                     "rationale": data.get("rationale", ""),
-                    "model_used": f"{model_name} (REST)"
+                    "model_used": f"{clean_name} ({api_ver} REST)"
                 }
             except Exception as e:
-                self.last_error = f"REST {model_name} failed: {e}"
+                self.last_error = f"REST {clean_name} ({api_ver}) failed: {e}"
                 continue
 
         print(f"[!] Gemini analysis error across all models: {self.last_error}")
