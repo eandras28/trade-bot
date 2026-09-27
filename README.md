@@ -1,28 +1,33 @@
-# 🛢️ Automated Oil Stock Trading Bot (Revolut Hungary Edition)
+# 🛢️⚡ Dual-Universe Trading Bot & Cloud Scanner (Revolut Hungary Edition)
 
-A 24/7 algorithmic trading bot and cloud scanner engineered for **Hungarian Revolut users** trading major energy equities:
-**`XOM` (ExxonMobil), `CVX` (Chevron), `OXY` (Occidental), `COP` (ConocoPhillips), `BP` (BP), and `SHEL` (Shell)**, anchored by physical **WTI Crude Futures (`CL=F`)**.
+A 24/7 algorithmic trading bot and cloud scanner engineered for **Hungarian Revolut users** scanning two high-conviction market universes:
+1. **Energy & Macro Oil Equities**: `XOM` (ExxonMobil), `CVX` (Chevron), `OXY` (Occidental), `COP` (ConocoPhillips), `BP` (BP), and `SHEL` (Shell), anchored by physical **WTI Crude Futures (`CL=F`)**.
+2. **High-Growth Deep Tech Niches**:
+   - **🔋 Power & Next-Gen Battery Tech**: `VRT` (Vertiv AI cooling & power), `ENVX` (Enovix silicon-anode), `QS` (QuantumScape solid-state), `FLNC` (Fluence grid storage).
+   - **🤖 Actuators & Advanced Robotics**: `SYM` (Symbotic warehouse automation & robotic actuation).
+   - **🧬 Health Tech & Bio AI**: `TEM` (Tempus AI oncology diagnostics), `HIMS` (Hims & Hers telehealth), `RXRX` (Recursion AI pharma with NVIDIA), `TMDX` (TransMedics organ transplant perfusion).
+   - Anchored by **Invesco Nasdaq 100 (`QQQ`)**.
 
 ---
 
 ## 📱 Live Phone Push Alerts (`ntfy.sh`)
 
-Trade signals are dispatched in real-time with exact **Action, Execution Price, Stop Loss, and Take Profit targets**:
+Trade signals are dispatched in real-time with exact **Sector Badge, Action, Execution Price, Stop Loss, and Take Profit targets**:
 
 ```text
-🟢 OIL BOT: BUY XOM @ $160.59
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-ACTION: BUY XOM (ExxonMobil)
-💵 Execution Price: $160.59
-🛑 Stop Loss: $150.56
-🎯 Take Profit Target: $176.64
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🟢 🔋 [Power/Battery] BUY VRT @ $253.28
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ACTION: BUY VRT (Power & AI Cooling)
+💵 Execution Price: $253.28
+🛑 Stop Loss: $238.40
+🎯 Take Profit Target: $278.60
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🧠 AI Reasoning [Gemini LLM]:
-"Saudi energy ministry confirmed strict quota compliance alongside 
-an unexpected 3.2M barrel US crude inventory draw, tightening short-term 
-physical balances despite European economic softness."
-📈 Technical: Fast EMA(12) > Slow EMA(26), RSI 48.9, Macro Crude: +0.42
-📱 Revolut: Ready to execute on your phone.
+"Vertiv secured an expanded tier-1 hyperscaler contract for high-density 
+liquid cooling deployments in next-gen AI data centers, accelerating 
+forward backlog while QQQ maintains a bullish technical regime."
+📈 Technical: Fast EMA(12) > Slow EMA(26), RSI 54.2, Sector Macro: +0.45
+📱 Revolut: Ready to trade.
 ```
 
 * **Active Phone Channel**: **`buzi-bot`**
@@ -32,16 +37,16 @@ physical balances despite European economic softness."
 
 ## 🧠 Dual AI News & Catalyst Intelligence
 
-Unlike simple keyword scripts, the bot uses a **two-tier intelligence engine**:
+Unlike simple keyword scripts, the bot uses a **sector-aware intelligence engine**:
 
 1. **Google Gemini LLM (Primary Context Engine)**:
-   - Evaluates physical OPEC+ supply quotas and compliance.
-   - Detects US EIA inventory surprise builds vs draws.
-   - Assesses geopolitical transit chokepoints (Strait of Hormuz, Red Sea) and sanctions.
-   - Explains its rationale in a crisp 1–2 sentence executive summary delivered directly to your lock screen.
-2. **Energy Domain Lexicon (Automatic 100% Uptime Fallback)**:
-   - If the API key is not configured or encounters rate limits, the bot automatically falls back to a physical commodity supply/demand lexicon.
-   - Every alert explicitly states whether it was analyzed by **`[Gemini LLM]`** or **`[Fallback Lexicon]`**.
+   - **Energy**: Physical OPEC+ quotas, EIA inventory surprises (builds vs draws), Middle East geopolitical chokepoints.
+   - **Power & Battery**: Silicon-anode/solid-state milestones, OEM testing validation, pilot line yield scaling, data center power agreements.
+   - **Actuators & Robotics**: Tier-1 enterprise rollouts, multi-million dollar warehouse automation contracts, robotic fleet deployments.
+   - **Health Tech**: Clinical trial endpoints, FDA clearances/rejections, breakthrough therapy designations, commercial deployment.
+2. **Dual-Domain NLP Lexicon (Automatic 100% Uptime Fallback)**:
+   - Energy + Deep Tech custom dictionaries ensure continuous operation even during API maintenance.
+   - Every alert explicitly tags **`[Gemini LLM]`** or **`[Fallback Lexicon]`**.
 
 ---
 

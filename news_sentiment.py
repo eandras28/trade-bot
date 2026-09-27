@@ -60,6 +60,58 @@ ENERGY_LEXICON = {
     "windfall tax": -1.8
 }
 
+# Specialized domain dictionary for tech, power/batteries, robotics & health tech
+TECH_GROWTH_LEXICON = {
+    # Health Tech & FDA / Clinical
+    "fda approval": 2.8,
+    "fda approved": 2.8,
+    "breakthrough therapy": 2.6,
+    "fast track designation": 2.2,
+    "phase 3 met": 2.7,
+    "primary endpoint met": 2.7,
+    "clinical trial success": 2.5,
+    "patent granted": 2.0,
+    "ce mark approval": 1.8,
+    "commercial clearance": 2.0,
+    "fda rejection": -2.8,
+    "complete response letter": -2.7,
+    "clinical hold": -2.8,
+    "failed trial": -2.8,
+    "endpoint missed": -2.7,
+    "safety concerns": -2.4,
+    # Power & Battery Tech
+    "solid state battery": 2.4,
+    "silicon anode": 2.2,
+    "energy density breakthrough": 2.4,
+    "oem qualification": 2.5,
+    "commercial supply agreement": 2.4,
+    "battery breakthrough": 2.3,
+    "data center power": 2.2,
+    "liquid cooling contract": 2.4,
+    "grid storage contract": 2.2,
+    "production delay": -2.2,
+    "yield issues": -2.2,
+    "battery recall": -2.8,
+    "fire risk": -2.5,
+    # Actuators & Robotics / Automation
+    "robotics deployment": 2.5,
+    "warehouse automation": 2.4,
+    "robotic actuator": 2.2,
+    "multi-million contract": 2.4,
+    "multi-billion contract": 2.8,
+    "tier-1 customer": 2.4,
+    "backlog expansion": 2.2,
+    "contract canceled": -2.6,
+    "deployment delayed": -2.0,
+    # Financials & Growth
+    "guidance raise": 2.5,
+    "revenue beat": 2.0,
+    "dilution": -2.5,
+    "secondary offering": -2.3,
+    "cash burn": -2.2,
+    "guidance cut": -2.6
+}
+
 
 def parse_llm_json(raw_text: str) -> Dict[str, Any]:
     """Parse JSON from LLM output, stripping markdown code blocks if present."""
@@ -215,9 +267,10 @@ class GeminiEnergyAnalyst:
         text = candidates[0].get("content", {}).get("parts", [{}])[0].get("text", "")
         return parse_llm_json(text)
 
-    def analyze_news_batch(self, target_name: str, articles: List[Dict[str, Any]]) -> Dict[str, Any]:
+    def analyze_news_batch(self, target_name: str, articles: List[Dict[str, Any]], sector: str = "Energy") -> Dict[str, Any]:
         """
-        Analyze a batch of headlines using Gemini with deep commodity context reasoning.
+        Analyze a batch of headlines using Gemini with deep domain context reasoning
+        (Energy vs High-Growth Tech/Battery/Health/Robotics).
         """
         if not self.is_active or not articles:
             return {}
@@ -227,7 +280,10 @@ class GeminiEnergyAnalyst:
             for a in articles[:6]
         ])
 
-        prompt = f"""You are a Senior Quantitative Commodity Analyst at an energy hedge fund.
+        is_energy = any(w in sector.lower() for w in ["energy", "oil", "crude", "petroleum"])
+
+        if is_energy:
+            prompt = f"""You are a Senior Quantitative Commodity Analyst at an energy hedge fund.
 Analyze these breaking headlines for {target_name} and determine the fundamental price impact over the next 1-5 trading days.
 
 Headlines:
@@ -244,6 +300,27 @@ Respond strictly with a JSON object in this format:
   "score": <float between -1.0 (extreme bearish) and 1.0 (extreme bullish)>,
   "regime": "<STRONG BULLISH | MILD BULLISH | NEUTRAL | MILD BEARISH | STRONG BEARISH>",
   "rationale": "<A sharp 1-2 sentence executive explanation of the fundamental reason>"
+}}
+"""
+        else:
+            prompt = f"""You are a Senior Quantitative Technology & Growth Equity Analyst at a top-tier hedge fund.
+Analyze these breaking headlines for {target_name} ({sector}) and determine the fundamental catalyst impact on the stock over the next 1-10 trading days.
+
+Headlines:
+{headlines_text}
+
+Evaluate specific sector catalysts:
+- Health Tech & Bio AI: Clinical trial endpoints, FDA approvals/rejections, breakthrough therapy designations, commercial deployment.
+- Power & Battery Tech: Silicon-anode/solid-state milestones, OEM testing validation, pilot yield scaling, hyperscaler AI data center power contracts.
+- Actuators & Robotics: Tier-1 enterprise customer rollouts, multi-million/billion automation backlogs, robotic fleet deployments.
+- Financial Quality: Revenue acceleration & guidance raises vs cash burn, dilution, or secondary offerings.
+- Separate true commercial catalysts from promotional PR noise.
+
+Respond strictly with a JSON object in this format:
+{{
+  "score": <float between -1.0 (extreme bearish) and 1.0 (extreme bullish)>,
+  "regime": "<STRONG BULLISH | MILD BULLISH | NEUTRAL | MILD BEARISH | STRONG BEARISH>",
+  "rationale": "<A sharp 1-2 sentence executive explanation of the fundamental catalyst>"
 }}
 """
         # Discover actual available models for this specific API key
@@ -303,16 +380,17 @@ Respond strictly with a JSON object in this format:
 
 class OilSentimentAnalyzer:
     def __init__(self):
-        # 1. Lexicon engine
+        # 1. Lexicon engine (Energy + Tech Growth / Battery / HealthTech / Robotics)
         self.vader = SentimentIntensityAnalyzer()
         self.vader.lexicon.update(ENERGY_LEXICON)
+        self.vader.lexicon.update(TECH_GROWTH_LEXICON)
 
         # 2. LLM engine
         self.llm_analyst = GeminiEnergyAnalyst()
         if self.llm_analyst.is_active:
-            print("[✓] AI Context Engine: Google Gemini LLM Active (Deep Context Reasoning)")
+            print("[✓] AI Context Engine: Google Gemini LLM Active (Dual-Universe Energy & Deep Tech)")
         else:
-            print("[i] AI Context Engine: Energy-Domain NLP Lexicon Active (Set GEMINI_API_KEY for LLM reasoning)")
+            print("[i] AI Context Engine: Dual-Domain NLP Lexicon Active (Set GEMINI_API_KEY for LLM reasoning)")
 
     def analyze_text(self, text: str) -> float:
         if not text:
@@ -377,45 +455,90 @@ class OilSentimentAnalyzer:
                     "type": "Macro Crude / OPEC"
                 })
         except Exception as e:
-            print(f"Error fetching macro news: {e}")
+            print(f"Error fetching macro crude news: {e}")
 
         return articles
 
-    def get_market_sentiment_report(self, symbols: List[str]) -> Dict[str, Any]:
+    def fetch_macro_tech_news(self, limit: int = 12) -> List[Dict[str, Any]]:
+        articles = []
+        try:
+            query = "AI+data+center+power+OR+solid+state+battery+OR+FDA+approval+OR+robotics+automation"
+            url = f"https://news.google.com/rss/search?q={query}&hl=en-US&gl=US&ceid=US:en"
+            feed = feedparser.parse(url)
+
+            for entry in feed.entries[:limit]:
+                title = entry.get("title", "")
+                published = entry.get("published", "")
+                link = entry.get("link", "")
+                source = entry.get("source", {}).get("title", "Google News")
+
+                score = self.analyze_text(title)
+                articles.append({
+                    "title": title,
+                    "summary": "",
+                    "score": round(score, 3),
+                    "publisher": source,
+                    "pubDate": published,
+                    "url": link,
+                    "type": "Macro Tech / Innovation"
+                })
+        except Exception as e:
+            print(f"Error fetching macro tech news: {e}")
+
+        return articles
+
+    def get_market_sentiment_report(self, symbols: List[str], sector_map: Optional[Dict[str, str]] = None) -> Dict[str, Any]:
         """
-        Aggregate sentiment for macro crude plus each symbol using Gemini LLM if available,
+        Aggregate sentiment for macro commodities/tech plus each symbol using Gemini LLM if available,
         falling back seamlessly to the domain lexicon.
         """
-        macro_news = self.fetch_macro_crude_news(limit=10)
+        s_map = sector_map or {}
+        has_energy = any("energy" in s_map.get(s, "energy").lower() for s in symbols)
+        has_tech = any("energy" not in s_map.get(s, "energy").lower() for s in symbols)
 
-        # 1. Macro Analysis
-        macro_rationale = ""
-        if self.llm_analyst.is_active and macro_news:
-            llm_macro = self.llm_analyst.analyze_news_batch("WTI Crude Oil & OPEC", macro_news)
-            if llm_macro:
-                avg_macro_score = llm_macro["score"]
-                macro_rationale = llm_macro.get("rationale", "")
-            else:
-                macro_scores = [a["score"] for a in macro_news if a["score"] != 0]
-                avg_macro_score = sum(macro_scores) / len(macro_scores) if macro_scores else 0.0
-        else:
-            macro_scores = [a["score"] for a in macro_news if a["score"] != 0]
-            avg_macro_score = sum(macro_scores) / len(macro_scores) if macro_scores else 0.0
-            if avg_macro_score > 0.1:
-                macro_rationale = "Physical supply tightening or geopolitical risk premiums dominating."
-            elif avg_macro_score < -0.1:
-                macro_rationale = "Unexpected inventory builds or diplomatic de-escalation dampening crude prices."
-            else:
-                macro_rationale = "Macro crude fundamentals balanced with no strong directional catalyst."
+        # 1. Macro Feeds
+        macro_news_energy = self.fetch_macro_crude_news(limit=8) if has_energy else []
+        macro_news_tech = self.fetch_macro_tech_news(limit=8) if has_tech else []
+
+        macro_rationale_energy = ""
+        avg_macro_score_energy = 0.0
+        if macro_news_energy:
+            if self.llm_analyst.is_active:
+                llm_m = self.llm_analyst.analyze_news_batch("WTI Crude Oil & OPEC", macro_news_energy, sector="Energy")
+                if llm_m:
+                    avg_macro_score_energy = llm_m["score"]
+                    macro_rationale_energy = llm_m.get("rationale", "")
+            if not macro_rationale_energy:
+                sc = [a["score"] for a in macro_news_energy if a["score"] != 0]
+                avg_macro_score_energy = sum(sc) / len(sc) if sc else 0.0
+                macro_rationale_energy = "Physical crude supply tightening" if avg_macro_score_energy > 0.1 else "Crude market balanced"
+
+        macro_rationale_tech = ""
+        avg_macro_score_tech = 0.0
+        if macro_news_tech:
+            if self.llm_analyst.is_active:
+                llm_t = self.llm_analyst.analyze_news_batch("Tech Innovation & Battery/Bio/Automation", macro_news_tech, sector="Technology")
+                if llm_t:
+                    avg_macro_score_tech = llm_t["score"]
+                    macro_rationale_tech = llm_t.get("rationale", "")
+            if not macro_rationale_tech:
+                sc = [a["score"] for a in macro_news_tech if a["score"] != 0]
+                avg_macro_score_tech = sum(sc) / len(sc) if sc else 0.0
+                macro_rationale_tech = "Deep tech commercialization accelerating" if avg_macro_score_tech > 0.1 else "Tech sector fundamentals neutral"
 
         # 2. Per-symbol Analysis
         symbol_reports = {}
         for sym in symbols:
+            sector = s_map.get(sym, "Energy")
+            is_energy_sym = any(w in sector.lower() for w in ["energy", "oil", "crude"])
+            avg_macro_score = avg_macro_score_energy if is_energy_sym else avg_macro_score_tech
+            macro_rationale = macro_rationale_energy if is_energy_sym else macro_rationale_tech
+
             sym_news = self.fetch_ticker_news(sym, limit=6)
             sym_rationale = ""
 
             if self.llm_analyst.is_active and sym_news:
-                llm_sym = self.llm_analyst.analyze_news_batch(sym, sym_news)
+                llm_sym = self.llm_analyst.analyze_news_batch(sym, sym_news, sector=sector)
                 if llm_sym:
                     avg_sym_score = llm_sym["score"]
                     sym_rationale = llm_sym.get("rationale", "")
@@ -426,7 +549,7 @@ class OilSentimentAnalyzer:
                 scores = [a["score"] for a in sym_news if a["score"] != 0]
                 avg_sym_score = sum(scores) / len(scores) if scores else 0.0
 
-            # Composite: 50% ticker, 50% macro
+            # Composite: 50% ticker specific catalyst, 50% sector macro
             composite = 0.5 * avg_sym_score + 0.5 * avg_macro_score
 
             if composite >= 0.25:
@@ -441,6 +564,7 @@ class OilSentimentAnalyzer:
                 regime = "⚪ NEUTRAL"
 
             symbol_reports[sym] = {
+                "sector": sector,
                 "composite_score": round(composite, 3),
                 "ticker_score": round(avg_sym_score, 3),
                 "macro_score": round(avg_macro_score, 3),
@@ -451,10 +575,10 @@ class OilSentimentAnalyzer:
             }
 
         return {
-            "macro_score": round(avg_macro_score, 3),
-            "macro_rationale": macro_rationale,
-            "engine_mode": "Gemini LLM Contextual" if self.llm_analyst.is_active else "Energy Domain Lexicon",
-            "macro_news_count": len(macro_news),
-            "top_macro_news": sorted(macro_news, key=lambda x: abs(x["score"]), reverse=True)[:5],
+            "macro_score_energy": round(avg_macro_score_energy, 3),
+            "macro_rationale_energy": macro_rationale_energy,
+            "macro_score_tech": round(avg_macro_score_tech, 3),
+            "macro_rationale_tech": macro_rationale_tech,
+            "engine_mode": "Gemini LLM Contextual" if self.llm_analyst.is_active else "Domain NLP Lexicon",
             "symbols": symbol_reports
         }

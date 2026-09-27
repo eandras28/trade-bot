@@ -4,11 +4,52 @@ from dataclasses import dataclass, field
 from typing import List, Optional
 
 
+ENERGY_SYMBOLS = ["XOM", "CVX", "OXY", "COP", "BP", "SHEL"]
+
+TECH_SYMBOLS = [
+    # Power & Next-Gen Battery Tech
+    "VRT",   # Vertiv Holdings (AI data center power, thermal & liquid cooling)
+    "ENVX",  # Enovix Corporation (Silicon-anode high-energy density batteries)
+    "QS",    # QuantumScape (Solid-state lithium metal EV & industrial batteries)
+    "FLNC",  # Fluence Energy (Siemens/AES grid battery energy storage systems)
+    # Actuators & Advanced Robotics
+    "SYM",   # Symbotic (AI-powered warehouse robotics & robotic arm actuators)
+    # Health Tech & Bio AI
+    "TEM",   # Tempus AI (Precision medicine, oncology genomic AI diagnostics)
+    "HIMS",  # Hims & Hers Health (Personalized telehealth platform)
+    "RXRX",  # Recursion Pharmaceuticals (AI drug discovery powered by NVIDIA)
+    "TMDX",  # TransMedics Group (Warm perfusion organ transplant technologies)
+]
+
+SECTOR_MAP = {
+    "XOM": "Energy & Oil",
+    "CVX": "Energy & Oil",
+    "OXY": "Energy & Oil",
+    "COP": "Energy & Oil",
+    "BP": "Energy & Oil",
+    "SHEL": "Energy & Oil",
+    "VRT": "Power & AI Cooling",
+    "ENVX": "Power & Battery Tech",
+    "QS": "Solid-State Battery",
+    "FLNC": "Grid Battery Storage",
+    "SYM": "Actuators & Robotics",
+    "TEM": "Health Tech & AI Bio",
+    "HIMS": "Health Tech & Telehealth",
+    "RXRX": "Health Tech & AI Pharma",
+    "TMDX": "Health Tech & MedTech",
+}
+
+
 @dataclass
 class BotConfig:
-    # Revolut Hungary Energy Equities Universe
-    symbols: List[str] = field(default_factory=lambda: ["XOM", "CVX", "OXY", "COP", "BP", "SHEL"])
-    macro_symbol: str = "CL=F"
+    # Dual-Universe Configuration (Revolut Hungary accessible equities)
+    energy_symbols: List[str] = field(default_factory=lambda: list(ENERGY_SYMBOLS))
+    tech_symbols: List[str] = field(default_factory=lambda: list(TECH_SYMBOLS))
+    symbols: List[str] = field(default_factory=lambda: list(ENERGY_SYMBOLS + TECH_SYMBOLS))
+
+    # Macro benchmarks
+    macro_symbol: str = "CL=F"         # Physical WTI Crude Futures benchmark for Energy
+    tech_macro_symbol: str = "QQQ"     # Invesco Nasdaq 100 benchmark for Tech
     leveraged_symbols: List[str] = field(default_factory=lambda: ["UCO", "SCO"])
 
     # Strategy mode: 'trend_dynamic' (recommended), 'leveraged_crude', 'long_short'

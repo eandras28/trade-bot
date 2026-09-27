@@ -15,7 +15,8 @@ class MultiStrategyEngine:
         """Compute technical indicators for all assets and align macro catalyst."""
         processed = {}
 
-        # 1. Process Macro Crude Futures (CL=F)
+        # 1. Process Macro Benchmarks (CL=F for Energy, QQQ for Tech)
+        cl = None
         if self.config.macro_symbol in data:
             cl = data[self.config.macro_symbol].copy()
             cl['ema_fast'] = compute_ema(cl['Close'], self.config.ema_fast)
@@ -26,12 +27,26 @@ class MultiStrategyEngine:
             cl['macro_bullish'] = (cl['ema_fast'] > cl['ema_slow']) & (cl['macd'] > cl['macd_sig'])
             cl['macro_bearish'] = (cl['ema_fast'] < cl['ema_slow']) & (cl['macd'] < cl['macd_sig'])
             processed[self.config.macro_symbol] = cl
-        else:
-            cl = None
+
+        qqq = None
+        tech_macro = getattr(self.config, 'tech_macro_symbol', 'QQQ')
+        if tech_macro in data:
+            qqq = data[tech_macro].copy()
+            qqq['ema_fast'] = compute_ema(qqq['Close'], self.config.ema_fast)
+            qqq['ema_slow'] = compute_ema(qqq['Close'], self.config.ema_slow)
+            macd, sig, _ = compute_macd(qqq['Close'], self.config.ema_fast, self.config.ema_slow, self.config.macd_signal_period)
+            qqq['macd'] = macd
+            qqq['macd_sig'] = sig
+            qqq['macro_bullish'] = (qqq['ema_fast'] > qqq['ema_slow']) & (qqq['macd'] > qqq['macd_sig'])
+            qqq['macro_bearish'] = (qqq['ema_fast'] < qqq['ema_slow']) & (qqq['macd'] < qqq['macd_sig'])
+            processed[tech_macro] = qqq
+
+        macro_symbols_set = {self.config.macro_symbol, tech_macro}
+        tech_symbols_set = set(getattr(self.config, 'tech_symbols', []))
 
         # 2. Process all symbols
         for sym, df in data.items():
-            if sym == self.config.macro_symbol:
+            if sym in macro_symbols_set:
                 continue
 
             d = df.copy()
@@ -45,10 +60,11 @@ class MultiStrategyEngine:
             d['atr'] = compute_atr(d, self.config.atr_period)
             d['vol_sma20'] = compute_sma(d['Volume'], 20)
 
-            # Map macro crude catalyst if enabled
-            if cl is not None and self.config.enable_macro_catalyst:
-                d['macro_bullish'] = cl['macro_bullish'].reindex(d.index).ffill().fillna(True)
-                d['macro_bearish'] = cl['macro_bearish'].reindex(d.index).ffill().fillna(False)
+            # Route macro benchmark: QQQ for Tech, CL=F for Energy
+            target_macro = qqq if (sym in tech_symbols_set and qqq is not None) else cl
+            if target_macro is not None and self.config.enable_macro_catalyst:
+                d['macro_bullish'] = target_macro['macro_bullish'].reindex(d.index).ffill().fillna(True)
+                d['macro_bearish'] = target_macro['macro_bearish'].reindex(d.index).ffill().fillna(False)
             else:
                 d['macro_bullish'] = True
                 d['macro_bearish'] = False

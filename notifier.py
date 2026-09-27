@@ -126,13 +126,29 @@ class UniversalNotifier:
         target: Optional[float] = None,
         catalyst: Optional[str] = None,
         engine_name: Optional[str] = None,
-        tech_reason: Optional[str] = None
+        tech_reason: Optional[str] = None,
+        sector: Optional[str] = None
     ) -> bool:
         icon = "🟢" if action == "BUY" else "🛑" if action in ["EXIT", "STOP_LOSS"] else "🎯"
-        title = f"{icon} OIL BOT: {action} {symbol} @ ${price:.2f}"
+        
+        # Sector badge for title
+        if sector and any(w in sector.lower() for w in ["power", "battery"]):
+            badge = "🔋 [Power/Battery]"
+        elif sector and any(w in sector.lower() for w in ["health", "bio", "pharma", "med"]):
+            badge = "🧬 [HealthTech]"
+        elif sector and any(w in sector.lower() for w in ["robot", "actuator"]):
+            badge = "🤖 [Robotics/Actuator]"
+        elif sector and any(w in sector.lower() for w in ["energy", "oil"]):
+            badge = "🛢️ [Energy]"
+        elif sector:
+            badge = f"⚡ [{sector}]"
+        else:
+            badge = "🛢️"
+
+        title = f"{icon} {badge} {action} {symbol} @ ${price:.2f}"
         
         lines = [
-            f"*{action}*: *{symbol}*",
+            f"*{action}*: *{symbol}*" + (f" ({sector})" if sector else ""),
             f"💵 *Execution Price*: ${price:.2f}",
         ]
         if stop_loss:

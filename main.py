@@ -46,42 +46,41 @@ def run_scan(args):
 
 
 def run_news(args):
-    symbols = args.symbols.split(",") if args.symbols else ["XOM", "CVX", "OXY", "COP", "BP", "SHEL"]
+    from config import SECTOR_MAP
+    cfg_default = BotConfig()
+    symbols = args.symbols.split(",") if args.symbols else cfg_default.symbols
     analyzer = OilSentimentAnalyzer()
-    print("\n🔍 Fetching latest energy news and evaluating sentiment...")
-    report = analyzer.get_market_sentiment_report(symbols)
+    print("\n🔍 Fetching latest energy & deep tech news and evaluating sentiment...")
+    report = analyzer.get_market_sentiment_report(symbols, sector_map=SECTOR_MAP)
 
-    print("\n" + "=" * 80)
-    print(f"       🌍 MACRO CRUDE OIL & GEOPOLITICAL SENTIMENT [{report.get('engine_mode', '')}]")
-    print("=" * 80)
-    macro_score = report.get("macro_score", 0.0)
-    print(f"Overall Macro Score: {macro_score:+.3f}")
-    if report.get("macro_rationale"):
-        print(f"AI Rationale: {report.get('macro_rationale')}")
+    print("\n" + "=" * 85)
+    print(f"       🌍 DUAL-UNIVERSE MACRO & GEOPOLITICAL SENTIMENT [{report.get('engine_mode', '')}]")
+    print("=" * 85)
+    if report.get("macro_rationale_energy"):
+        print(f"🛢️ Macro Crude Score: {report.get('macro_score_energy', 0.0):+.3f} | AI: {report.get('macro_rationale_energy')}")
+    if report.get("macro_rationale_tech"):
+        print(f"⚡ Macro Tech Score:  {report.get('macro_score_tech', 0.0):+.3f} | AI: {report.get('macro_rationale_tech')}")
 
-    print("\nTop Macro Headlines:")
-    for a in report.get("top_macro_news", [])[:6]:
-        icon = "🟢" if a['score'] > 0.1 else "🔴" if a['score'] < -0.1 else "⚪"
-        print(f"  {icon} [{a['score']:+.2f}] {a['title']} ({a['publisher']})")
-
-    print("\n" + "=" * 80)
-    print("           🏢 REVOLUT ENERGY EQUITIES SENTIMENT")
-    print("=" * 80)
+    print("\n" + "=" * 85)
+    print("           🏢 REVOLUT DUAL-UNIVERSE EQUITIES SENTIMENT")
+    print("=" * 85)
     summary_table = []
     for sym, sdata in report.get("symbols", {}).items():
         summary_table.append({
             "Symbol": sym,
+            "Sector": sdata.get("sector", "Equities"),
             "Composite Score": f"{sdata['composite_score']:+.3f}",
             "Ticker Score": f"{sdata['ticker_score']:+.3f}",
             "Sentiment Regime": sdata["sentiment_regime"],
             "Articles": sdata["news_count"]
         })
     print(tabulate(summary_table, headers="keys", tablefmt="fancy_grid"))
-    print("=" * 80 + "\n")
+    print("=" * 85 + "\n")
 
 
 def run_live(args):
-    symbols = args.symbols.split(",") if args.symbols else ["XOM", "CVX", "OXY", "COP", "BP", "SHEL"]
+    cfg_default = BotConfig()
+    symbols = args.symbols.split(",") if args.symbols else cfg_default.symbols
     config = BotConfig(
         symbols=symbols,
         mode=args.mode,
@@ -95,7 +94,8 @@ def run_live(args):
 
 
 def run_check_and_notify(args):
-    symbols = args.symbols.split(",") if args.symbols else ["XOM", "CVX", "OXY", "COP", "BP", "SHEL"]
+    cfg_default = BotConfig()
+    symbols = args.symbols.split(",") if args.symbols else cfg_default.symbols
     config = BotConfig(
         symbols=symbols,
         mode=args.mode,

@@ -55,16 +55,18 @@ class LiveDaemon:
 
         for row in table:
             sym = row["Symbol"]
+            sector = row.get("Sector", "Equities")
             price = row["Price ($)"]
             decision = row["Combined Decision"]
             stop_loss = float(row["Stop Loss"].replace("$", ""))
-            rationale = row.get("Rationale", "Macro commodity momentum")
+            rationale = row.get("Rationale", "Macro momentum & catalyst alignment")
+            sym_macro_score = sent_rep.get("symbols", {}).get(sym, {}).get("macro_score", 0.0)
 
             last_signal = self.state["last_signals"].get(sym, "NONE")
 
             # 1. NEW BUY TRIGGER
             if "BUY" in decision and "BUY" not in last_signal:
-                print(f"[!] New BUY Alert detected for {sym} at ${price:.2f} [Engine: {engine_mode}]")
+                print(f"[!] New BUY Alert detected for {sym} ({sector}) at ${price:.2f} [Engine: {engine_mode}]")
                 target_price = price * 1.10
                 self.notifier.send_trade_signal(
                     symbol=sym,
@@ -74,19 +76,21 @@ class LiveDaemon:
                     target=target_price,
                     catalyst=rationale,
                     engine_name=engine_mode,
-                    tech_reason=f"Fast EMA > Slow EMA, RSI {row['RSI']}, Macro Crude Sentiment: {macro_score:+.2f}"
+                    tech_reason=f"Fast EMA > Slow EMA, RSI {row['RSI']}, Sector Macro: {sym_macro_score:+.2f}",
+                    sector=sector
                 )
                 self.state["positions"][sym] = {
                     "entry_price": price,
                     "stop_loss": stop_loss,
-                    "entry_time": timestamp
+                    "entry_time": timestamp,
+                    "sector": sector
                 }
                 self.state["last_signals"][sym] = "BUY"
                 self._save_state()
 
             # 2. NEW EXIT / SELL TRIGGER
             elif ("EXIT" in decision or "SHORT" in decision or "BEARISH" in row["Tech Regime"]) and last_signal == "BUY":
-                print(f"[!] EXIT Alert detected for {sym} at ${price:.2f} [Engine: {engine_mode}]")
+                print(f"[!] EXIT Alert detected for {sym} ({sector}) at ${price:.2f} [Engine: {engine_mode}]")
                 entry_info = self.state["positions"].pop(sym, {})
                 entry_p = entry_info.get("entry_price", price)
                 ret_pct = ((price - entry_p) / entry_p) * 100 if entry_p else 0.0
@@ -99,7 +103,8 @@ class LiveDaemon:
                     target=None,
                     catalyst=rationale,
                     engine_name=engine_mode,
-                    tech_reason=f"Regime breakdown. Return: {ret_pct:+.2f}%"
+                    tech_reason=f"Regime breakdown. Return: {ret_pct:+.2f}%",
+                    sector=sector
                 )
                 self.state["last_signals"][sym] = "EXIT"
                 self._save_state()

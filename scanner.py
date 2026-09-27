@@ -3,7 +3,7 @@ from typing import Dict, Any, List
 import pandas as pd
 from tabulate import tabulate
 
-from config import BotConfig
+from config import BotConfig, SECTOR_MAP
 from data import MarketDataLoader
 from strategy import MultiStrategyEngine
 from news_sentiment import OilSentimentAnalyzer
@@ -23,7 +23,8 @@ class MarketScanner:
         if self.config.mode == "leveraged_crude":
             active_symbols = list(self.config.leveraged_symbols)
 
-        all_fetch = list(set(active_symbols + [self.config.macro_symbol]))
+        tech_macro = getattr(self.config, 'tech_macro_symbol', 'QQQ')
+        all_fetch = list(set(active_symbols + [self.config.macro_symbol, tech_macro]))
         raw_data = self.data_loader.fetch_all(
             all_fetch,
             start_date="2023-01-01",
@@ -32,7 +33,7 @@ class MarketScanner:
 
         sentiment_data = {}
         if include_news:
-            sentiment_data = self.sentiment_analyzer.get_market_sentiment_report(active_symbols)
+            sentiment_data = self.sentiment_analyzer.get_market_sentiment_report(active_symbols, sector_map=SECTOR_MAP)
 
         processed = self.strategy_engine.prepare_data(raw_data)
 
@@ -88,6 +89,7 @@ class MarketScanner:
 
             results.append({
                 "Symbol": symbol,
+                "Sector": SECTOR_MAP.get(symbol, "Equities"),
                 "Price ($)": round(close, 2),
                 "Combined Decision": conviction,
                 "News Sent.": f"{sentiment_score:+.2f}",
