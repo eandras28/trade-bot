@@ -11,7 +11,7 @@ on:
       ntfy_topic:
         description: 'Target ntfy topic (optional override)'
         required: false
-        default: ''
+        default: 'buzi-bot'
 
 jobs:
   scan-and-alert:
@@ -39,6 +39,6 @@ jobs:
           SECRET_TOPIC: ${{ secrets.NTFY_TOPIC }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
-          TARGET_TOPIC="${INPUT_TOPIC:-${SECRET_TOPIC:-test-oil-alert-check}}"
+          TARGET_TOPIC="${INPUT_TOPIC:-${SECRET_TOPIC:-buzi-bot}}"
           echo "Scanning market and pushing alerts to ntfy topic: $TARGET_TOPIC"
           python main.py check-and-notify --ntfy "$TARGET_TOPIC"
