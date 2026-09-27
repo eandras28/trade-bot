@@ -51,6 +51,7 @@ class LiveDaemon:
         table = scan_result.get("table", [])
         sent_rep = scan_result.get("sentiment_report", {})
         macro_score = sent_rep.get("macro_score", 0.0)
+        engine_mode = sent_rep.get("engine_mode", "Energy Domain Lexicon")
 
         for row in table:
             sym = row["Symbol"]
@@ -63,7 +64,7 @@ class LiveDaemon:
 
             # 1. NEW BUY TRIGGER
             if "BUY" in decision and "BUY" not in last_signal:
-                print(f"[!] New BUY Alert detected for {sym} at ${price:.2f}")
+                print(f"[!] New BUY Alert detected for {sym} at ${price:.2f} [Engine: {engine_mode}]")
                 target_price = price * 1.10
                 self.notifier.send_trade_signal(
                     symbol=sym,
@@ -72,6 +73,7 @@ class LiveDaemon:
                     stop_loss=stop_loss,
                     target=target_price,
                     catalyst=rationale,
+                    engine_name=engine_mode,
                     tech_reason=f"Fast EMA > Slow EMA, RSI {row['RSI']}, Macro Crude Sentiment: {macro_score:+.2f}"
                 )
                 self.state["positions"][sym] = {
@@ -84,7 +86,7 @@ class LiveDaemon:
 
             # 2. NEW EXIT / SELL TRIGGER
             elif ("EXIT" in decision or "SHORT" in decision or "BEARISH" in row["Tech Regime"]) and last_signal == "BUY":
-                print(f"[!] EXIT Alert detected for {sym} at ${price:.2f}")
+                print(f"[!] EXIT Alert detected for {sym} at ${price:.2f} [Engine: {engine_mode}]")
                 entry_info = self.state["positions"].pop(sym, {})
                 entry_p = entry_info.get("entry_price", price)
                 ret_pct = ((price - entry_p) / entry_p) * 100 if entry_p else 0.0
@@ -96,6 +98,7 @@ class LiveDaemon:
                     stop_loss=None,
                     target=None,
                     catalyst=rationale,
+                    engine_name=engine_mode,
                     tech_reason=f"Regime breakdown. Return: {ret_pct:+.2f}%"
                 )
                 self.state["last_signals"][sym] = "EXIT"
@@ -105,7 +108,7 @@ class LiveDaemon:
                 self.state["last_signals"][sym] = decision
 
         self._save_state()
-        print(f"[{timestamp}] Scan completed. Next cycle in {self.config.scan_interval_minutes} minutes.")
+        print(f"[{timestamp}] Scan completed using [{engine_mode}]. Next cycle in {self.config.scan_interval_minutes} minutes.")
 
     def start_loop(self):
         print("=" * 65)

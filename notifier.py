@@ -40,22 +40,18 @@ class UniversalNotifier:
         """Send message through all configured private channels."""
         delivered = False
 
-        # Channel 1: ntfy.sh (Instant private phone push)
         if self.ntfy_topic:
             if self._send_via_ntfy(message, title, priority):
                 delivered = True
 
-        # Channel 2: Telegram Bot
         if self.telegram_bot_token and self.telegram_chat_id:
             if self._send_via_telegram(message):
                 delivered = True
 
-        # Channel 3: Twilio Official WhatsApp
         if self.twilio_account_sid and self.twilio_auth_token and self.whatsapp_phone:
             if self._send_via_twilio(message):
                 delivered = True
 
-        # Channel 4: CallMeBot (only if explicitly set)
         if self.callmebot_api_key and self.whatsapp_phone:
             if self._send_via_callmebot(message):
                 delivered = True
@@ -89,7 +85,6 @@ class UniversalNotifier:
             return False
 
     def _send_via_telegram(self, message: str) -> bool:
-        """Send message via your private Telegram bot."""
         try:
             url = f"https://api.telegram.org/bot{self.telegram_bot_token}/sendMessage"
             payload = {
@@ -98,33 +93,21 @@ class UniversalNotifier:
                 "parse_mode": "Markdown"
             }
             res = requests.post(url, json=payload, timeout=10)
-            if res.status_code == 200:
-                print("[✓] Telegram notification delivered to your private chat.")
-                return True
-            else:
-                print(f"[✗] Telegram error ({res.status_code}): {res.text}")
-                return False
-        except Exception as e:
-            print(f"[✗] Failed to send via Telegram: {e}")
+            return res.status_code == 200
+        except Exception:
             return False
 
     def _send_via_twilio(self, message: str) -> bool:
-        """Send WhatsApp message using Twilio REST API."""
         try:
             to_phone = self.whatsapp_phone if self.whatsapp_phone.startswith("whatsapp:") else f"whatsapp:{self.whatsapp_phone}"
             url = f"https://api.twilio.com/2010-04-01/Accounts/{self.twilio_account_sid}/Messages.json"
             data = {"From": self.twilio_from_number, "To": to_phone, "Body": message}
             res = requests.post(url, data=data, auth=(self.twilio_account_sid, self.twilio_auth_token), timeout=15)
-            if res.status_code in [200, 201]:
-                print(f"[✓] WhatsApp notification delivered via Twilio.")
-                return True
-            return False
-        except Exception as e:
-            print(f"[✗] Twilio error: {e}")
+            return res.status_code in [200, 201]
+        except Exception:
             return False
 
     def _send_via_callmebot(self, message: str) -> bool:
-        """Send via CallMeBot."""
         try:
             clean_phone = self.whatsapp_phone.replace("+", "").replace(" ", "").replace("-", "")
             encoded_text = urllib.parse.quote(message)
@@ -142,6 +125,7 @@ class UniversalNotifier:
         stop_loss: Optional[float] = None,
         target: Optional[float] = None,
         catalyst: Optional[str] = None,
+        engine_name: Optional[str] = None,
         tech_reason: Optional[str] = None
     ) -> bool:
         icon = "🟢" if action == "BUY" else "🛑" if action in ["EXIT", "STOP_LOSS"] else "🎯"
@@ -155,10 +139,16 @@ class UniversalNotifier:
             lines.append(f"🛑 *Stop Loss*: ${stop_loss:.2f}")
         if target:
             lines.append(f"🎯 *Take Profit*: ${target:.2f}")
-        if catalyst:
-            lines.append(f"📰 *News Catalyst*: {catalyst}")
+
+        # Explicitly declare AI Engine vs Fallback
+        if engine_name and "Gemini" in engine_name:
+            lines.append(f"🧠 *AI Reasoning [Gemini LLM]*:\n{catalyst}")
+        else:
+            lines.append(f"⚡ *News Catalyst [Fallback Lexicon]*:\n{catalyst}")
+
         if tech_reason:
             lines.append(f"📈 *Technical*: {tech_reason}")
+            
         lines.append("📱 *Revolut*: Ready to trade.")
 
         msg = "\n".join(lines)
