@@ -43,13 +43,21 @@ jobs:
           INPUT_TOPIC: ${{ github.event.inputs.ntfy_topic }}
           SECRET_TOPIC: ${{ secrets.NTFY_TOPIC }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
           TEST_GEMINI: ${{ github.event.inputs.test_gemini }}
         run: |
           TARGET_TOPIC="${INPUT_TOPIC:-${SECRET_TOPIC:-buzi-bot}}"
           echo "Using ntfy topic: $TARGET_TOPIC"
 
+          KEY_VAL="${GEMINI_API_KEY:-$GOOGLE_API_KEY}"
+          if [ -n "$KEY_VAL" ]; then
+            echo "✓ GEMINI_API_KEY is successfully loaded from GitHub Secrets."
+          else
+            echo "⚠️ WARNING: GEMINI_API_KEY is not detected in GitHub Secrets!"
+          fi
+
           if [ "$TEST_GEMINI" = "true" ]; then
-            echo "🚀 Executing Live Gemini LLM Test using your GEMINI_API_KEY secret..."
+            echo "🚀 Executing Live Gemini LLM Test using your secret..."
             python main.py test-gemini --ntfy "$TARGET_TOPIC"
           else
             echo "🔍 Executing Standard 24/7 Market Scan..."

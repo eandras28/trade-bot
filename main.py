@@ -122,16 +122,30 @@ def test_alert(args):
 
 def test_gemini(args):
     api_key = args.key or os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
+    target_topic = args.ntfy or "buzi-bot"
+    notifier = UniversalNotifier(ntfy_topic=target_topic)
+
     if not api_key:
         print("\n[!] Error: No Gemini API Key provided.")
-        print("Please provide it via --key 'YOUR_KEY' or set GEMINI_API_KEY in your environment.")
-        print("You can get a free API key in 10 seconds at: https://aistudio.google.com/app/apikey\n")
+        print("Please ensure the secret name is GEMINI_API_KEY under GitHub Repository Secrets.")
+        notifier.send_message(
+            "⚠️ *Gemini Test Notice*\n"
+            "The cloud runner did not detect `GEMINI_API_KEY`.\n\n"
+            "Please check GitHub: *Settings -> Secrets and variables -> Actions -> Repository Secrets* "
+            "and verify the secret is named exactly *GEMINI_API_KEY*.",
+            title="⚠️ GEMINI_API_KEY Missing"
+        )
         return
 
     print("\n[1] Initializing Google Gemini LLM Client...")
     analyst = GeminiEnergyAnalyst(api_key=api_key)
     if not analyst.is_active:
         print("[!] Failed to initialize Gemini. Check that your API key is valid.")
+        notifier.send_message(
+            "⚠️ *Gemini Test Notice*\n"
+            "The Gemini Client failed to initialize. Please check that your API key is active and valid.",
+            title="⚠️ Gemini Key Invalid"
+        )
         return
 
     print("[2] Fetching live breaking news headlines for ExxonMobil (XOM)...")
