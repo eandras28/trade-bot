@@ -8,6 +8,11 @@ on:
     - cron: '0 */2 * * 0,6'
   workflow_dispatch:
     inputs:
+      test_gemini:
+        description: 'Send a test Gemini AI alert to your phone right now'
+        type: boolean
+        required: true
+        default: true
       ntfy_topic:
         description: 'Target ntfy topic (optional override)'
         required: false
@@ -38,7 +43,15 @@ jobs:
           INPUT_TOPIC: ${{ github.event.inputs.ntfy_topic }}
           SECRET_TOPIC: ${{ secrets.NTFY_TOPIC }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TEST_GEMINI: ${{ github.event.inputs.test_gemini }}
         run: |
           TARGET_TOPIC="${INPUT_TOPIC:-${SECRET_TOPIC:-buzi-bot}}"
-          echo "Scanning market and pushing alerts to ntfy topic: $TARGET_TOPIC"
-          python main.py check-and-notify --ntfy "$TARGET_TOPIC"
+          echo "Using ntfy topic: $TARGET_TOPIC"
+
+          if [ "$TEST_GEMINI" = "true" ]; then
+            echo "🚀 Executing Live Gemini LLM Test using your GEMINI_API_KEY secret..."
+            python main.py test-gemini --ntfy "$TARGET_TOPIC"
+          else
+            echo "🔍 Executing Standard 24/7 Market Scan..."
+            python main.py check-and-notify --ntfy "$TARGET_TOPIC"
+          fi
