@@ -9,14 +9,17 @@ on:
   workflow_dispatch:
     inputs:
       test_gemini:
-        description: 'Send a test Gemini AI alert to your phone right now'
+        description: 'Send an immediate Gemini AI test alert (uncheck for live market scan)'
         type: boolean
         required: true
-        default: true
+        default: false
       ntfy_topic:
         description: 'Target ntfy topic (optional override)'
         required: false
         default: 'buzi-bot'
+
+permissions:
+  contents: write
 
 jobs:
   scan-and-alert:
@@ -62,4 +65,14 @@ jobs:
           else
             echo "🔍 Executing Standard 24/7 Market Scan..."
             python main.py check-and-notify --ntfy "$TARGET_TOPIC"
+          fi
+
+      - name: Persist Daemon State
+        if: always()
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          if [ -f daemon_state.json ]; then
+            git add daemon_state.json
+            git diff --quiet && git diff --staged --quiet || git commit -m "Update live daemon state [skip ci]" && git push || true
           fi

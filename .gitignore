@@ -5,4 +5,3 @@ __pycache__/
 *.parquet
 *.png
 .env
-daemon_state.json
