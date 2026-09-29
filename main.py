@@ -196,19 +196,65 @@ def test_gemini(args):
     print(f"\n[✓] Successfully delivered Gemini-powered trade alert to your phone!")
 
 
+def run_brent_daemon(args):
+    from brent_cfd_engine import BrentCFDEngine
+    engine = BrentCFDEngine(ntfy_topic=args.ntfy or "buzi-bot")
+    engine.start_continuous_loop(
+        duration_minutes=args.duration,
+        interval_seconds=args.interval,
+        send_pulse_on_start=args.pulse
+    )
+
+
+def run_brent_scan(args):
+    from brent_cfd_engine import BrentCFDEngine
+    engine = BrentCFDEngine(ntfy_topic=args.ntfy or "buzi-bot")
+    engine.run_single_cycle(send_pulse_if_due=args.pulse)
+
+
+def run_brent_pulse(args):
+    from brent_cfd_engine import BrentCFDEngine
+    import pandas as pd
+    engine = BrentCFDEngine(ntfy_topic=args.ntfy or "buzi-bot")
+    df = engine.fetch_market_data()
+    df = engine.compute_technical_indicators(df)
+    articles = engine.fetch_brent_news(limit=6)
+    news_eval = engine.evaluate_news_sentiment(articles)
+    price = float(df['Close'].iloc[-1])
+    rsi = float(df['rsi'].iloc[-1])
+    atr = float(df['atr'].iloc[-1]) if not pd.isna(df['atr'].iloc[-1]) else 0.85
+    engine.notify_market_pulse(price, news_eval, rsi, atr)
+
+
 def main():
-    parser = argparse.ArgumentParser(description="Automated Oil Stock Trading Bot with Push Alerts")
+    parser = argparse.ArgumentParser(description="Brent Crude Oil CFD & Equities 24/7 Trading Engine")
     subparsers = parser.add_subparsers(dest="command", help="Available subcommands")
 
-    # Cloud runner check-and-notify
+    # Brent CFD 24/7 Continuous Daemon (Primary mode)
+    brent_daemon_parser = subparsers.add_parser("brent-daemon", help="Run 24/7 continuous Brent Crude CFD monitoring loop")
+    brent_daemon_parser.add_argument("--duration", type=int, default=240, help="Session duration in minutes (default: 240 = 4 hours)")
+    brent_daemon_parser.add_argument("--interval", type=int, default=300, help="Interval between scans in seconds (default: 300 = 5 minutes)")
+    brent_daemon_parser.add_argument("--ntfy", type=str, default="buzi-bot", help="ntfy topic")
+    brent_daemon_parser.add_argument("--pulse", action="store_true", help="Send immediate market pulse on start")
+
+    # Brent CFD Single Scan
+    brent_scan_parser = subparsers.add_parser("brent-scan", help="Run single scan for Brent Crude CFD")
+    brent_scan_parser.add_argument("--ntfy", type=str, default="buzi-bot")
+    brent_scan_parser.add_argument("--pulse", action="store_true", help="Include market pulse digest")
+
+    # Brent Market Pulse Digest
+    pulse_parser = subparsers.add_parser("brent-pulse", help="Send immediate Brent Crude market status digest to phone")
+    pulse_parser.add_argument("--ntfy", type=str, default="buzi-bot")
+
+    # Cloud runner check-and-notify (Dual-universe fallback)
     cron_parser = subparsers.add_parser("check-and-notify", help="Run single scan and notify (ideal for GitHub Actions)")
-    cron_parser.add_argument("--symbols", type=str, default="XOM,CVX,OXY,COP,BP,SHEL")
+    cron_parser.add_argument("--symbols", type=str, default=None)
     cron_parser.add_argument("--mode", type=str, default="trend_dynamic")
     cron_parser.add_argument("--ntfy", type=str, default="buzi-bot")
 
     # Live daemon subcommand
     live_parser = subparsers.add_parser("live", help="Start continuous live daemon with push alerts")
-    live_parser.add_argument("--symbols", type=str, default="XOM,CVX,OXY,COP,BP,SHEL")
+    live_parser.add_argument("--symbols", type=str, default=None)
     live_parser.add_argument("--mode", type=str, default="trend_dynamic", choices=["trend_dynamic", "leveraged_crude", "long_short"])
     live_parser.add_argument("--interval", type=int, default=15)
     live_parser.add_argument("--ntfy", type=str, default="buzi-bot")
@@ -233,16 +279,22 @@ def main():
 
     # Scan subcommand
     scan_parser = subparsers.add_parser("scan", help="Scan technicals + live news sentiment")
-    scan_parser.add_argument("--symbols", type=str, default="XOM,CVX,OXY,COP,BP,SHEL")
+    scan_parser.add_argument("--symbols", type=str, default=None)
     scan_parser.add_argument("--mode", type=str, default="trend_dynamic", choices=["trend_dynamic", "leveraged_crude", "long_short"])
 
     # News subcommand
     news_parser = subparsers.add_parser("news", help="Deep dive into current news sentiment and catalysts")
-    news_parser.add_argument("--symbols", type=str, default="XOM,CVX,OXY,COP,BP,SHEL")
+    news_parser.add_argument("--symbols", type=str, default=None)
 
     args = parser.parse_args()
 
-    if args.command == "check-and-notify":
+    if args.command == "brent-daemon":
+        run_brent_daemon(args)
+    elif args.command == "brent-scan":
+        run_brent_scan(args)
+    elif args.command == "brent-pulse":
+        run_brent_pulse(args)
+    elif args.command == "check-and-notify":
         run_check_and_notify(args)
     elif args.command == "live":
         run_live(args)

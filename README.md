@@ -1,33 +1,33 @@
-# 🛢️⚡ Dual-Universe Trading Bot & Cloud Scanner (Revolut Hungary Edition)
+# 🛢️ Brent Crude Oil 24/7 CFD Swing Trading Engine (Revolut Edition)
 
-A 24/7 algorithmic trading bot and cloud scanner engineered for **Hungarian Revolut users** scanning two high-conviction market universes:
-1. **Energy & Macro Oil Equities**: `XOM` (ExxonMobil), `CVX` (Chevron), `OXY` (Occidental), `COP` (ConocoPhillips), `BP` (BP), and `SHEL` (Shell), anchored by physical **WTI Crude Futures (`CL=F`)**.
-2. **High-Growth Deep Tech Niches**:
-   - **🔋 Power & Next-Gen Battery Tech**: `VRT` (Vertiv AI cooling & power), `ENVX` (Enovix silicon-anode), `QS` (QuantumScape solid-state), `FLNC` (Fluence grid storage).
-   - **🤖 Actuators & Advanced Robotics**: `SYM` (Symbotic warehouse automation & robotic actuation).
-   - **🧬 Health Tech & Bio AI**: `TEM` (Tempus AI oncology diagnostics), `HIMS` (Hims & Hers telehealth), `RXRX` (Recursion AI pharma with NVIDIA), `TMDX` (TransMedics organ transplant perfusion).
-   - Anchored by **Invesco Nasdaq 100 (`QQQ`)**.
+An autonomous, 24/7 algorithmic trading engine engineered for **Brent Crude Oil CFD (`BZ=F` / `BRNT`)** trading on Revolut and CFD brokerages:
+- **Target Instrument**: Pure **Brent Crude Oil** (global petroleum benchmark).
+- **Strategy Horizon**: **2–3 Day Swing Positions** (Long & Short CFDs).
+- **Execution Speed**: Checks prices and breaking news continuously **every 5 minutes, 24/7**.
+- **AI Intelligence**: **Google Gemini LLM** evaluating physical OPEC+ quota compliance, weekly EIA/API stockpiles, and Middle East / Red Sea chokepoint geopolitics.
+- **Risk Management**: Dynamic $1.5 \times \text{ATR}$ Stop Loss and $2.5 \times \text{ATR}$ Take Profit with trailing stop protection.
 
 ---
 
-## 📱 Live Phone Push Alerts (`ntfy.sh`)
+## 📱 Live Phone Push Alerts (`ntfy.sh/buzi-bot`)
 
-Trade signals are dispatched in real-time with exact **Sector Badge, Action, Execution Price, Stop Loss, and Take Profit targets**:
+Trade signals are dispatched in real-time with exact **Action, Execution Price, Stop Loss, and Take Profit targets**:
 
 ```text
-🟢 🔋 [Power/Battery] BUY VRT @ $253.28
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-ACTION: BUY VRT (Power & AI Cooling)
-💵 Execution Price: $253.28
-🛑 Stop Loss: $238.40
-🎯 Take Profit Target: $278.60
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🧠 AI Reasoning [Gemini LLM]:
-"Vertiv secured an expanded tier-1 hyperscaler contract for high-density 
-liquid cooling deployments in next-gen AI data centers, accelerating 
-forward backlog while QQQ maintains a bullish technical regime."
-📈 Technical: Fast EMA(12) > Slow EMA(26), RSI 54.2, Sector Macro: +0.45
-📱 Revolut: Ready to trade.
+🟢 [BRNT CFD] OPEN LONG @ $96.72
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+INSTRUMENT: Brent Crude Oil CFD (BRNT)
+ACTION: 🟢 OPEN LONG (BUY CFD)
+💵 Entry Price: $96.72
+🛑 Stop Loss: $95.40 (Risk: -$1.32/bbl)
+🎯 Take Profit: $98.92 (Reward: +$2.20/bbl)
+⏱️ Target Horizon: 2–3 Days Swing
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🧠 AI Fundamental Catalyst [Gemini LLM]:
+"Unexpected 4.1M barrel crude drawdown reported alongside renewed Red Sea 
+tanker security alerts, tightening near-term prompt physical balances."
+📈 Technical Setup: 1H EMA(12) > EMA(26), MACD Bullish Crossover, RSI 53.8, 14H ATR: $0.88
+📱 Revolut: Open Long CFD position on Brent Crude.
 ```
 
 * **Active Phone Channel**: **`buzi-bot`**

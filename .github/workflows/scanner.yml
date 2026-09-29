@@ -1,18 +1,24 @@
-name: 🛢️ Oil Bot 24/7 Cloud Scanner
+name: 🛢️ Brent Crude 24/7 CFD Cloud Engine
 
 on:
   schedule:
-    # Runs every 30 minutes Monday through Friday (13:00 - 22:00 UTC covers US Market Hours)
-    - cron: '*/30 13-22 * * 1-5'
-    # Also runs every 2 hours on weekends / off-market for major geopolitical/OPEC weekend news
-    - cron: '0 */2 * * 0,6'
+    # 24/7 Continuous Watchdog: triggers every 4 hours covering all 24 hours of every day (Sunday-Saturday)
+    - cron: '15 */4 * * *'
   workflow_dispatch:
     inputs:
-      test_gemini:
-        description: 'Send an immediate Gemini AI test alert (uncheck for live market scan)'
+      duration_minutes:
+        description: 'Duration in minutes to run the continuous 5-minute loop (default: 240 = 4 hours)'
+        required: false
+        default: '240'
+      interval_seconds:
+        description: 'Interval between news and price checks in seconds (default: 300 = 5 minutes)'
+        required: false
+        default: '300'
+      send_status_pulse:
+        description: 'Send immediate Brent market status pulse to phone on start'
         type: boolean
-        required: true
-        default: false
+        required: false
+        default: true
       ntfy_topic:
         description: 'Target ntfy topic (optional override)'
         required: false
@@ -22,8 +28,9 @@ permissions:
   contents: write
 
 jobs:
-  scan-and-alert:
+  brent-cfd-engine:
     runs-on: ubuntu-latest
+    timeout-minutes: 350
 
     steps:
       - name: Checkout Code
@@ -41,13 +48,15 @@ jobs:
           pip install -r requirements.txt
           python -c "import nltk; nltk.download('vader_lexicon')"
 
-      - name: Run Market & AI News Scan
+      - name: Run Continuous 24/7 Brent Crude CFD Daemon
         env:
           INPUT_TOPIC: ${{ github.event.inputs.ntfy_topic }}
           SECRET_TOPIC: ${{ secrets.NTFY_TOPIC }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
-          TEST_GEMINI: ${{ github.event.inputs.test_gemini }}
+          DURATION_MINUTES: ${{ github.event.inputs.duration_minutes || '240' }}
+          INTERVAL_SECONDS: ${{ github.event.inputs.interval_seconds || '300' }}
+          SEND_PULSE: ${{ github.event.inputs.send_status_pulse || 'true' }}
         run: |
           TARGET_TOPIC="${INPUT_TOPIC:-${SECRET_TOPIC:-buzi-bot}}"
           echo "Using ntfy topic: $TARGET_TOPIC"
@@ -59,13 +68,13 @@ jobs:
             echo "⚠️ WARNING: GEMINI_API_KEY is not detected in GitHub Secrets!"
           fi
 
-          if [ "$TEST_GEMINI" = "true" ]; then
-            echo "🚀 Executing Live Gemini LLM Test using your secret..."
-            python main.py test-gemini --ntfy "$TARGET_TOPIC"
-          else
-            echo "🔍 Executing Standard 24/7 Market Scan..."
-            python main.py check-and-notify --ntfy "$TARGET_TOPIC"
+          PULSE_ARG=""
+          if [ "$SEND_PULSE" = "true" ] || [ -z "${{ github.event.inputs.duration_minutes }}" ]; then
+            PULSE_ARG="--pulse"
           fi
+
+          echo "🚀 Launching Brent Crude 24/7 CFD Engine (Duration: ${DURATION_MINUTES}m, Interval: ${INTERVAL_SECONDS}s)..."
+          python main.py brent-daemon --duration "$DURATION_MINUTES" --interval "$INTERVAL_SECONDS" --ntfy "$TARGET_TOPIC" $PULSE_ARG
 
       - name: Persist Daemon State
         if: always()
@@ -74,5 +83,5 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           if [ -f daemon_state.json ]; then
             git add daemon_state.json
-            git diff --quiet && git diff --staged --quiet || git commit -m "Update live daemon state [skip ci]" && git push || true
+            git diff --quiet && git diff --staged --quiet || git commit -m "Update Brent CFD daemon state [skip ci]" && git push || true
           fi

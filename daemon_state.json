@@ -1,11 +1,7 @@
 {
-  "positions": {},
-  "last_signals": {
-    "XOM": "\ud83d\udd34 DEFENSIVE / CASH",
-    "CVX": "\ud83d\udd34 DEFENSIVE / CASH",
-    "OXY": "\ud83d\udd34 DEFENSIVE / CASH",
-    "COP": "\ud83d\udd34 DEFENSIVE / CASH",
-    "BP": "\ud83d\udd34 DEFENSIVE / CASH",
-    "SHEL": "\ud83d\udd34 DEFENSIVE / CASH"
-  }
+  "active_trade": null,
+  "last_signal": "NONE",
+  "last_pulse_time": 0,
+  "last_news_hash": "",
+  "trade_history": []
 }
