@@ -267,7 +267,7 @@ class GeminiEnergyAnalyst:
         text = candidates[0].get("content", {}).get("parts", [{}])[0].get("text", "")
         return parse_llm_json(text)
 
-    def analyze_news_batch(self, target_name: str, articles: List[Dict[str, Any]], sector: str = "Energy") -> Dict[str, Any]:
+    def analyze_news_batch(self, target_name: str, articles: List[Dict[str, Any]], sector: str = "Energy", price_context: str = "") -> Dict[str, Any]:
         """
         Analyze a batch of headlines using Gemini with deep domain context reasoning
         (Energy vs High-Growth Tech/Battery/Health/Robotics).
@@ -283,13 +283,15 @@ class GeminiEnergyAnalyst:
         is_energy = any(w in sector.lower() for w in ["energy", "oil", "crude", "petroleum"])
 
         if is_energy:
+            context_section = f"\nReal-Time Market & Technical Price Context:\n{price_context}\n" if price_context else ""
             prompt = f"""You are a Senior Quantitative Commodity Analyst at an energy hedge fund.
 Analyze these breaking headlines for {target_name} and determine the fundamental price impact over the next 1-5 trading days.
-
-Headlines:
+{context_section}
+Breaking Headlines:
 {headlines_text}
 
 Consider:
+- Real-time price action versus backward-looking media headlines (e.g. if price is rallying despite fading headlines, recognize physical buying or squeeze dynamics).
 - Physical supply/demand shifts and OPEC+ quota discipline.
 - EIA inventory surprises (unexpected builds vs draws).
 - Geopolitical risk premiums (Middle East, sanctions, chokepoint transit).
@@ -299,7 +301,7 @@ Respond strictly with a JSON object in this format:
 {{
   "score": <float between -1.0 (extreme bearish) and 1.0 (extreme bullish)>,
   "regime": "<STRONG BULLISH | MILD BULLISH | NEUTRAL | MILD BEARISH | STRONG BEARISH>",
-  "rationale": "<A sharp 1-2 sentence executive explanation of the fundamental reason>"
+  "rationale": "<A sharp 1-2 sentence executive explanation of the fundamental reason synthesizing news and price action>"
 }}
 """
         else:

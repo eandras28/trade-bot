@@ -50,11 +50,17 @@ class BrentCFDEngine:
             try:
                 with open(self.state_file, "r") as f:
                     data = json.load(f)
-                    # Migrate legacy state if needed
                     if "active_trade" not in data:
                         data["active_trade"] = None
                     if "trade_history" not in data:
                         data["trade_history"] = []
+                    
+                    # Safety check: Invalidate any active trade from a different or legacy symbol (e.g. BZ=F)
+                    if data.get("active_trade"):
+                        t_sym = data["active_trade"].get("symbol", "")
+                        if t_sym != self.symbol:
+                            print(f"[!] Discarding legacy active trade from prior symbol ({t_sym or 'Legacy'} vs current {self.symbol})")
+                            data["active_trade"] = None
                     return data
             except Exception as e:
                 print(f"[!] Warning reading state file: {e}")
@@ -147,7 +153,7 @@ class BrentCFDEngine:
 
         return articles
 
-    def evaluate_news_sentiment(self, articles: List[Dict[str, Any]]) -> Dict[str, Any]:
+    def evaluate_news_sentiment(self, articles: List[Dict[str, Any]], price_context: str = "") -> Dict[str, Any]:
         """Evaluate breaking headlines using Google Gemini LLM with physical commodity reasoning."""
         if not articles:
             return {"score": 0.0, "regime": "NEUTRAL", "rationale": "No breaking headlines found."}
@@ -157,7 +163,12 @@ class BrentCFDEngine:
         current_hash = hashlib.md5(content_str.encode()).hexdigest()
 
         if self.gemini_analyst.is_active:
-            res = self.gemini_analyst.analyze_news_batch("Crude Oil Tracker (CL=F / Revolut BRNT)", articles, sector="Energy")
+            res = self.gemini_analyst.analyze_news_batch(
+                "Crude Oil Tracker (CL=F / Revolut BRNT)", 
+                articles, 
+                sector="Energy",
+                price_context=price_context
+            )
             if res and res.get("rationale"):
                 res["news_hash"] = current_hash
                 return res
@@ -423,7 +434,7 @@ class BrentCFDEngine:
         print(f"\n[>>> DISPATCHING CFD EXIT ALERT ({pnl_pct:+.2f}%) >>>]")
         self.notifier.send_message(msg, title=title, priority="high")
 
-    def notify_market_pulse(self, price: float, news_eval: Dict[str, Any], rsi: float, atr: float):
+    def notify_market_pulse(self, price: float, news_eval: Dict[str, Any], rsi: float, atr: float, chg_24h_pct: float = 0.0, chg_24h_val: float = 0.0):
         """Send regular market status digest so the user is never in the dark."""
         active = self.state.get("active_trade")
         status_line = "No Open Position (Monitoring next 2-3 day swing window)"
@@ -433,8 +444,9 @@ class BrentCFDEngine:
             pnl = ((price - e_p) / e_p * 100) if t_type == "LONG" else ((e_p - price) / e_p * 100)
             status_line = f"Active {t_type} (Entry: ${e_p:.2f}, P&L: {pnl:+.2f}%)"
 
+        chg_str = f" ({chg_24h_pct:+.2f}% / {chg_24h_val:+.2f}$ Today)" if chg_24h_pct != 0.0 else ""
         title = f"🛢️ [Revolut BRNT] Market Pulse: ${price:.2f}"
-        msg = f"""🛢️ *Revolut Crude Tracker (BRNT)*: *${price:.2f}*
+        msg = f"""🛢️ *Revolut Crude Tracker (BRNT)*: *${price:.2f}*{chg_str}
 📊 *1H RSI*: {rsi:.1f} | *14H ATR*: ${atr:.2f}
 🧠 *AI News Regime*: {news_eval.get('regime', 'NEUTRAL')} ({news_eval.get('score', 0.0):+.2f})
 📋 *Position Status*: {status_line}
@@ -454,16 +466,28 @@ class BrentCFDEngine:
 
         df = self.fetch_market_data()
         df = self.compute_technical_indicators(df)
+
+        price = float(df['Close'].iloc[-1])
+        rsi = float(df['rsi'].iloc[-1])
+        atr = float(df['atr'].iloc[-1]) if not pd.isna(df['atr'].iloc[-1]) else 0.85
+        ema_fast = float(df['ema_fast'].iloc[-1])
+        ema_slow = float(df['ema_slow'].iloc[-1])
+
+        # Calculate 24-hour return matching Revolut Today view
+        price_24h_ago = float(df['Close'].iloc[-24]) if len(df) >= 24 else float(df['Close'].iloc[0])
+        chg_24h_pct = ((price - price_24h_ago) / price_24h_ago) * 100.0
+        chg_24h_val = price - price_24h_ago
+
+        trend_desc = "Bullish momentum (1H EMA12 > EMA26)" if ema_fast > ema_slow else "Bearish momentum (1H EMA12 < EMA26)"
+        price_context = f"Current Market Price: ${price:.2f} ({chg_24h_pct:+.2f}% / ${chg_24h_val:+.2f} over 24h). 1H RSI: {rsi:.1f}. Trend: {trend_desc}."
+
         articles = self.fetch_brent_news(limit=6)
-        news_eval = self.evaluate_news_sentiment(articles)
+        news_eval = self.evaluate_news_sentiment(articles, price_context=price_context)
 
         decision = self.evaluate_trading_signals(df, news_eval)
         action = decision.get("action")
-        price = decision.get("price", df['Close'].iloc[-1])
-        rsi = float(df['rsi'].iloc[-1])
-        atr = float(df['atr'].iloc[-1]) if not pd.isna(df['atr'].iloc[-1]) else 0.85
 
-        print(f"  • Price: ${price:.2f} | RSI: {rsi:.1f} | ATR: ${atr:.2f}")
+        print(f"  • Price: ${price:.2f} ({chg_24h_pct:+.2f}%) | RSI: {rsi:.1f} | ATR: ${atr:.2f}")
         print(f"  • AI Sentiment: {news_eval.get('regime')} ({news_eval.get('score'):+.2f})")
         print(f"  • Decision: {action}")
 
@@ -477,6 +501,7 @@ class BrentCFDEngine:
 
             self.notify_trade_open(trade_type, price, sl, tp, cat, tech_r)
             self.state["active_trade"] = {
+                "symbol": self.symbol,
                 "type": trade_type,
                 "entry_price": price,
                 "entry_time": datetime.now().isoformat(),
@@ -515,7 +540,7 @@ class BrentCFDEngine:
         now_ts = time.time()
         last_pulse = self.state.get("last_pulse_time", 0)
         if send_pulse_if_due and (now_ts - last_pulse >= 43200):  # 12 hours = 43200 seconds
-            self.notify_market_pulse(price, news_eval, rsi, atr)
+            self.notify_market_pulse(price, news_eval, rsi, atr, chg_24h_pct, chg_24h_val)
             self.state["last_pulse_time"] = now_ts
             self._save_state()
 
@@ -537,12 +562,22 @@ class BrentCFDEngine:
         if send_pulse_on_start:
             df = self.fetch_market_data()
             df = self.compute_technical_indicators(df)
-            articles = self.fetch_brent_news(limit=6)
-            news_eval = self.evaluate_news_sentiment(articles)
             price = float(df['Close'].iloc[-1])
             rsi = float(df['rsi'].iloc[-1])
             atr = float(df['atr'].iloc[-1]) if not pd.isna(df['atr'].iloc[-1]) else 0.85
-            self.notify_market_pulse(price, news_eval, rsi, atr)
+            ema_fast = float(df['ema_fast'].iloc[-1])
+            ema_slow = float(df['ema_slow'].iloc[-1])
+
+            price_24h_ago = float(df['Close'].iloc[-24]) if len(df) >= 24 else float(df['Close'].iloc[0])
+            chg_24h_pct = ((price - price_24h_ago) / price_24h_ago) * 100.0
+            chg_24h_val = price - price_24h_ago
+
+            trend_desc = "Bullish momentum (1H EMA12 > EMA26)" if ema_fast > ema_slow else "Bearish momentum (1H EMA12 < EMA26)"
+            price_context = f"Current Market Price: ${price:.2f} ({chg_24h_pct:+.2f}% / ${chg_24h_val:+.2f} over 24h). 1H RSI: {rsi:.1f}. Trend: {trend_desc}."
+
+            articles = self.fetch_brent_news(limit=6)
+            news_eval = self.evaluate_news_sentiment(articles, price_context=price_context)
+            self.notify_market_pulse(price, news_eval, rsi, atr, chg_24h_pct, chg_24h_val)
             self.state["last_pulse_time"] = time.time()
             self._save_state()
 

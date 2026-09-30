@@ -218,12 +218,22 @@ def run_brent_pulse(args):
     engine = BrentCFDEngine(ntfy_topic=args.ntfy or "buzi-bot")
     df = engine.fetch_market_data()
     df = engine.compute_technical_indicators(df)
-    articles = engine.fetch_brent_news(limit=6)
-    news_eval = engine.evaluate_news_sentiment(articles)
     price = float(df['Close'].iloc[-1])
     rsi = float(df['rsi'].iloc[-1])
     atr = float(df['atr'].iloc[-1]) if not pd.isna(df['atr'].iloc[-1]) else 0.85
-    engine.notify_market_pulse(price, news_eval, rsi, atr)
+    ema_fast = float(df['ema_fast'].iloc[-1])
+    ema_slow = float(df['ema_slow'].iloc[-1])
+
+    price_24h_ago = float(df['Close'].iloc[-24]) if len(df) >= 24 else float(df['Close'].iloc[0])
+    chg_24h_pct = ((price - price_24h_ago) / price_24h_ago) * 100.0
+    chg_24h_val = price - price_24h_ago
+
+    trend_desc = "Bullish momentum (1H EMA12 > EMA26)" if ema_fast > ema_slow else "Bearish momentum (1H EMA12 < EMA26)"
+    price_context = f"Current Market Price: ${price:.2f} ({chg_24h_pct:+.2f}% / ${chg_24h_val:+.2f} over 24h). 1H RSI: {rsi:.1f}. Trend: {trend_desc}."
+
+    articles = engine.fetch_brent_news(limit=6)
+    news_eval = engine.evaluate_news_sentiment(articles, price_context=price_context)
+    engine.notify_market_pulse(price, news_eval, rsi, atr, chg_24h_pct, chg_24h_val)
 
 
 def main():

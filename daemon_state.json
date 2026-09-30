@@ -1,17 +1,7 @@
 {
-  "active_trade": {
-    "type": "SHORT",
-    "entry_price": 96.55000305175781,
-    "entry_time": "2026-09-29T14:30:10.338321",
-    "stop_loss": 96.42,
-    "take_profit": 94.71,
-    "highest_price": 96.55000305175781,
-    "lowest_price": 95.31999969482422,
-    "atr_entry": 0.7364278520856585,
-    "catalyst": "While geopolitical tensions remain elevated due to the Strait of Hormuz standoff, actual physical supply fears are abating as Saudi Arabia resumes Red Sea oil exports and ramps up pipeline capacity, driving prices lower over recent sessions."
-  },
-  "last_signal": "SHORT",
-  "last_pulse_time": 1790714786.0988145,
+  "active_trade": null,
+  "last_signal": "NONE",
+  "last_pulse_time": 0,
   "last_news_hash": "",
   "trade_history": []
 }
