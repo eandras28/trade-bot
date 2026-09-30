@@ -1,6 +1,7 @@
-"""Brent Crude Oil (BRNT / BZ=F) 24/7 CFD Swing Trading Engine.
+"""Revolut Crude Oil Tracker (BRNT / CL=F) 24/7 CFD Swing Trading Engine.
 
-Specialized for 2-3 day CFD positions on Brent Crude Oil:
+Specialized for 2-3 day CFD positions on Revolut's Crude Oil Tracker (BRNT):
+- Tracks NYMEX Crude Oil Futures (CL=F) which Revolut uses for BRNT pricing
 - Long (Buy CFD) & Short (Sell CFD) execution
 - 1-Hour & 4-Hour Trend Momentum + Dynamic ATR Risk Management
 - Real-Time 5-minute news scraping & Google Gemini contextual catalyst evaluation
@@ -24,11 +25,12 @@ from indicators import compute_ema, compute_macd, compute_rsi, compute_atr
 
 
 class BrentCFDEngine:
-    """Dedicated Brent Crude Oil CFD 24/7 Swing Trading Engine."""
+    """Dedicated Revolut Crude Oil Tracker (BRNT / CL=F) 24/7 Swing Trading Engine."""
 
     def __init__(self, ntfy_topic: str = "buzi-bot"):
-        self.symbol = "BZ=F"
-        self.asset_name = "Brent Crude Oil CFD"
+        # Revolut's "BRNT - Crude oil tracker" uses NYMEX Light Sweet Crude (CL=F) futures pricing
+        self.symbol = "CL=F"
+        self.asset_name = "Revolut Crude Oil Tracker (BRNT)"
         self.ntfy_topic = ntfy_topic or os.getenv("NTFY_TOPIC", "buzi-bot")
         self.notifier = UniversalNotifier(ntfy_topic=self.ntfy_topic)
         self.gemini_analyst = GeminiEnergyAnalyst()
@@ -69,7 +71,7 @@ class BrentCFDEngine:
     # 1. Market Data Fetching (1-Hour Candles for 2-3 Day Swing Horizons)
     # =========================================================================
     def fetch_market_data(self) -> pd.DataFrame:
-        """Fetch latest 1-hour candles for Brent Crude (BZ=F)."""
+        """Fetch latest 1-hour candles for Revolut Crude Tracker (CL=F)."""
         try:
             ticker = yf.Ticker(self.symbol)
             df = ticker.history(period="1mo", interval="1h", auto_adjust=True)
@@ -100,7 +102,7 @@ class BrentCFDEngine:
         except Exception as e2:
             print(f"[!] Yahoo REST fallback error: {e2}")
 
-        raise RuntimeError("Failed to fetch Brent Crude market data from all sources.")
+        raise RuntimeError("Failed to fetch Crude Oil market data from all sources.")
 
     def compute_technical_indicators(self, df: pd.DataFrame) -> pd.DataFrame:
         """Calculate trend momentum and ATR risk management metrics."""
@@ -116,13 +118,13 @@ class BrentCFDEngine:
         return d
 
     # =========================================================================
-    # 2. Real-Time Brent Crude News Scraper & Gemini AI Context
+    # 2. Real-Time Crude News Scraper & Gemini AI Context
     # =========================================================================
     def fetch_brent_news(self, limit: int = 8) -> List[Dict[str, Any]]:
-        """Fetch breaking headlines specific to Brent Crude, OPEC+, EIA, and Middle East geopolitics."""
+        """Fetch breaking headlines specific to Crude Oil, OPEC+, EIA, and geopolitical energy supply."""
         articles = []
         try:
-            query = "Brent+crude+OR+crude+oil+OR+OPEC+OR+petroleum+inventory+OR+Strait+of+Hormuz+OR+Red+Sea"
+            query = "crude+oil+OR+WTI+OR+Brent+crude+OR+OPEC+OR+petroleum+inventory+OR+Strait+of+Hormuz"
             url = f"https://news.google.com/rss/search?q={query}&hl=en-US&gl=US&ceid=US:en"
             feed = feedparser.parse(url)
 
@@ -141,7 +143,7 @@ class BrentCFDEngine:
                         "url": link
                     })
         except Exception as e:
-            print(f"[!] Error fetching Brent news: {e}")
+            print(f"[!] Error fetching crude news: {e}")
 
         return articles
 
@@ -155,7 +157,7 @@ class BrentCFDEngine:
         current_hash = hashlib.md5(content_str.encode()).hexdigest()
 
         if self.gemini_analyst.is_active:
-            res = self.gemini_analyst.analyze_news_batch("Brent Crude Oil Futures (BZ=F)", articles, sector="Energy")
+            res = self.gemini_analyst.analyze_news_batch("Crude Oil Tracker (CL=F / Revolut BRNT)", articles, sector="Energy")
             if res and res.get("rationale"):
                 res["news_hash"] = current_hash
                 return res
@@ -386,9 +388,9 @@ class BrentCFDEngine:
         risk_per_bbl = abs(price - stop_loss)
         reward_per_bbl = abs(target - price)
 
-        title = f"{icon} [BRNT CFD] {action_text} @ ${price:.2f}"
+        title = f"{icon} [Revolut BRNT] {action_text} @ ${price:.2f}"
         msg = f"""*ACTION*: *{action_text}*
-🛢️ *Instrument*: Brent Crude Oil CFD (BRNT)
+🛢️ *Instrument*: Revolut Crude Oil Tracker (BRNT)
 💵 *Entry Price*: ${price:.2f}
 🛑 *Stop Loss*: ${stop_loss:.2f} (Risk: -${risk_per_bbl:.2f}/bbl)
 🎯 *Take Profit*: ${target:.2f} (Reward: +${reward_per_bbl:.2f}/bbl)
@@ -398,7 +400,7 @@ class BrentCFDEngine:
 {catalyst}
 
 📈 *Technical Setup*: {tech_reason}
-📱 *Revolut*: Ready to trade Brent Crude CFD."""
+📱 *Revolut*: Ready to trade on Revolut 'BRNT'."""
 
         print(f"\n[>>> DISPATCHING {trade_type} CFD ENTRY ALERT >>>]")
         self.notifier.send_message(msg, title=title, priority="high")
@@ -408,15 +410,15 @@ class BrentCFDEngine:
         pnl_icon = "💰" if pnl_pct >= 0 else "🛑"
         days_held = hours_held / 24.0
 
-        title = f"{pnl_icon} [BRNT CFD] CLOSE {trade_type} @ ${price:.2f} ({pnl_pct:+.2f}%)"
+        title = f"{pnl_icon} [Revolut BRNT] CLOSE {trade_type} @ ${price:.2f} ({pnl_pct:+.2f}%)"
         msg = f"""*ACTION*: *CLOSE {trade_type} POSITION*
-🛢️ *Instrument*: Brent Crude Oil CFD (BRNT)
+🛢️ *Instrument*: Revolut Crude Oil Tracker (BRNT)
 💵 *Exit Price*: ${price:.2f}
 {pnl_icon} *Return*: *{pnl_pct:+.2f}%*
 ⏱️ *Duration*: {days_held:.1f} Days ({hours_held:.0f} hours)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 *Exit Reason*: {reason}
-📱 *Revolut*: Close active Brent Crude position."""
+📱 *Revolut*: Close active position in Revolut app."""
 
         print(f"\n[>>> DISPATCHING CFD EXIT ALERT ({pnl_pct:+.2f}%) >>>]")
         self.notifier.send_message(msg, title=title, priority="high")
@@ -431,8 +433,8 @@ class BrentCFDEngine:
             pnl = ((price - e_p) / e_p * 100) if t_type == "LONG" else ((e_p - price) / e_p * 100)
             status_line = f"Active {t_type} (Entry: ${e_p:.2f}, P&L: {pnl:+.2f}%)"
 
-        title = f"🛢️ [BRNT CFD] Market Pulse: ${price:.2f}"
-        msg = f"""🛢️ *Brent Crude Oil CFD*: *${price:.2f}*
+        title = f"🛢️ [Revolut BRNT] Market Pulse: ${price:.2f}"
+        msg = f"""🛢️ *Revolut Crude Tracker (BRNT)*: *${price:.2f}*
 📊 *1H RSI*: {rsi:.1f} | *14H ATR*: ${atr:.2f}
 🧠 *AI News Regime*: {news_eval.get('regime', 'NEUTRAL')} ({news_eval.get('score', 0.0):+.2f})
 📋 *Position Status*: {status_line}
@@ -448,7 +450,7 @@ class BrentCFDEngine:
     def run_single_cycle(self, send_pulse_if_due: bool = True) -> Dict[str, Any]:
         """Execute one complete 5-minute news & price scan cycle."""
         now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        print(f"\n[{now_str}] 🔍 Scanning Brent Crude Oil CFD (BZ=F)...")
+        print(f"\n[{now_str}] 🔍 Scanning Revolut Crude Oil Tracker ({self.symbol})...")
 
         df = self.fetch_market_data()
         df = self.compute_technical_indicators(df)
@@ -525,7 +527,7 @@ class BrentCFDEngine:
         Designed for persistent GitHub Actions runners and local background operation.
         """
         print("=" * 70)
-        print("   🛢️ BRENT CRUDE 24/7 CFD SWING ENGINE STARTED")
+        print("   🛢️ REVOLUT CRUDE OIL TRACKER (BRNT) 24/7 CFD SWING ENGINE")
         print(f"  • Asset: {self.asset_name} ({self.symbol})")
         print(f"  • Scan Interval: Every {interval_seconds} seconds ({interval_seconds/60:.1f} mins)")
         print(f"  • Session Duration: {duration_minutes} minutes ({duration_minutes/60:.1f} hours)")
