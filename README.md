@@ -1,8 +1,8 @@
-# 🛢️ Revolut Crude Oil Tracker (BRNT) 24/7 CFD Swing Trading Engine
+# 🛢️ Revolut BRENT:CFD (Crude Oil Brent) 24/7 Swing Trading Engine
 
-An autonomous, 24/7 algorithmic trading engine engineered for **Revolut's Crude Oil Tracker (BRNT / `CL=F`)**:
-- **Target Instrument**: Revolut **"BRNT - Crude oil tracker"** (underlying feed: NYMEX Light Sweet Crude Futures `CL=F`).
-- **Strategy Horizon**: **2–3 Day Swing Positions** (Long & Short CFDs).
+An autonomous, 24/7 algorithmic trading engine engineered for **Revolut's 'BRENT:CFD · Crude Oil Brent' (Black Gold)**:
+- **Target Instrument**: Revolut **`BRENT:CFD`** (underlying feed: Active Front-Month Brent Crude Futures `BZX26.NYM` at ~$103.87).
+- **Strategy Horizon**: **2–3 Day Swing Positions** (Buy / Long & Sell / Short CFDs).
 - **Execution Speed**: Checks prices and breaking news continuously **every 5 minutes, 24/7**.
 - **AI Intelligence**: **Google Gemini LLM** evaluating physical OPEC+ quota compliance, weekly EIA/API stockpiles, and Middle East / Red Sea chokepoint geopolitics.
 - **Risk Management**: Dynamic $1.5 \times \text{ATR}$ Stop Loss and $2.5 \times \text{ATR}$ Take Profit with trailing stop protection.

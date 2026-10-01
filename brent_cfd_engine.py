@@ -1,8 +1,8 @@
-"""Revolut Crude Oil Tracker (BRNT / CL=F) 24/7 CFD Swing Trading Engine.
+"""Revolut BRENT:CFD (Crude Oil Brent) 24/7 CFD Swing Trading Engine.
 
-Specialized for 2-3 day CFD positions on Revolut's Crude Oil Tracker (BRNT):
-- Tracks NYMEX Crude Oil Futures (CL=F) which Revolut uses for BRNT pricing
-- Long (Buy CFD) & Short (Sell CFD) execution
+Specialized for 2-3 day CFD positions on Revolut's 'BRENT:CFD · Crude Oil Brent':
+- Tracks the active front-month Brent contract (BZX26.NYM at ~$103.87) matching Revolut's CFD screen
+- Long (Buy CFD) & Short (Sell CFD) execution matching Revolut's 'Buy' and 'Sell' buttons
 - 1-Hour & 4-Hour Trend Momentum + Dynamic ATR Risk Management
 - Real-Time 5-minute news scraping & Google Gemini contextual catalyst evaluation
 - 24/7 continuous monitoring with position state tracking and mobile push alerts via ntfy.sh
@@ -24,13 +24,39 @@ from notifier import UniversalNotifier
 from indicators import compute_ema, compute_macd, compute_rsi, compute_atr
 
 
-class BrentCFDEngine:
-    """Dedicated Revolut Crude Oil Tracker (BRNT / CL=F) 24/7 Swing Trading Engine."""
+MONTH_CODES = ['F', 'G', 'H', 'J', 'K', 'M', 'N', 'Q', 'U', 'V', 'X', 'Z']
 
-    def __init__(self, ntfy_topic: str = "buzi-bot"):
-        # Revolut's "BRNT - Crude oil tracker" uses NYMEX Light Sweet Crude (CL=F) futures pricing
-        self.symbol = "CL=F"
-        self.asset_name = "Revolut Crude Oil Tracker (BRNT)"
+
+def get_revolut_brent_symbol() -> str:
+    """
+    Get the exact active front-month Brent contract matching Revolut's 'BRENT:CFD · Crude Oil Brent'.
+    In October 2026, Revolut trades the November 2026 contract (BZX26.NYM at ~$103.87).
+    Automatically rolls forward as future contracts expire.
+    """
+    now = datetime.now()
+    year = now.year % 100
+    month = now.month
+    for offset in [1, 2]:
+        m_idx = (month - 1 + offset) % 12
+        y = year + ((month - 1 + offset) // 12)
+        sym = f"BZ{MONTH_CODES[m_idx]}{y}.NYM"
+        try:
+            t = yf.Ticker(sym)
+            df = t.history(period="3d", interval="1h")
+            if not df.empty and len(df) >= 10:
+                return sym
+        except Exception:
+            pass
+    return "BZ=F"
+
+
+class BrentCFDEngine:
+    """Dedicated Revolut BRENT:CFD (Crude Oil Brent) 24/7 Swing Trading Engine."""
+
+    def __init__(self, ntfy_topic: str = "buzi-bot", symbol: Optional[str] = None):
+        # Revolut's "BRENT:CFD · Crude Oil Brent" trades the active front-month contract (BZX26.NYM at ~$103.87)
+        self.symbol = symbol or os.getenv("BRENT_SYMBOL") or get_revolut_brent_symbol()
+        self.asset_name = "Revolut BRENT:CFD (Crude Oil Brent)"
         self.ntfy_topic = ntfy_topic or os.getenv("NTFY_TOPIC", "buzi-bot")
         self.notifier = UniversalNotifier(ntfy_topic=self.ntfy_topic)
         self.gemini_analyst = GeminiEnergyAnalyst()
@@ -399,9 +425,10 @@ class BrentCFDEngine:
         risk_per_bbl = abs(price - stop_loss)
         reward_per_bbl = abs(target - price)
 
-        title = f"{icon} [Revolut BRNT] {action_text} @ ${price:.2f}"
+        btn_action = "Buy" if trade_type == "LONG" else "Sell"
+        title = f"{icon} [Revolut BRENT:CFD] {action_text} @ ${price:.2f}"
         msg = f"""*ACTION*: *{action_text}*
-🛢️ *Instrument*: Revolut Crude Oil Tracker (BRNT)
+🛢️ *Instrument*: Revolut BRENT:CFD (Crude Oil Brent)
 💵 *Entry Price*: ${price:.2f}
 🛑 *Stop Loss*: ${stop_loss:.2f} (Risk: -${risk_per_bbl:.2f}/bbl)
 🎯 *Take Profit*: ${target:.2f} (Reward: +${reward_per_bbl:.2f}/bbl)
@@ -411,7 +438,7 @@ class BrentCFDEngine:
 {catalyst}
 
 📈 *Technical Setup*: {tech_reason}
-📱 *Revolut*: Ready to trade on Revolut 'BRNT'."""
+📱 *Revolut*: Tap '{btn_action}' on 'BRENT:CFD · Crude Oil Brent' (Black Gold)."""
 
         print(f"\n[>>> DISPATCHING {trade_type} CFD ENTRY ALERT >>>]")
         self.notifier.send_message(msg, title=title, priority="high")
@@ -421,15 +448,15 @@ class BrentCFDEngine:
         pnl_icon = "💰" if pnl_pct >= 0 else "🛑"
         days_held = hours_held / 24.0
 
-        title = f"{pnl_icon} [Revolut BRNT] CLOSE {trade_type} @ ${price:.2f} ({pnl_pct:+.2f}%)"
+        title = f"{pnl_icon} [Revolut BRENT:CFD] CLOSE {trade_type} @ ${price:.2f} ({pnl_pct:+.2f}%)"
         msg = f"""*ACTION*: *CLOSE {trade_type} POSITION*
-🛢️ *Instrument*: Revolut Crude Oil Tracker (BRNT)
+🛢️ *Instrument*: Revolut BRENT:CFD (Crude Oil Brent)
 💵 *Exit Price*: ${price:.2f}
 {pnl_icon} *Return*: *{pnl_pct:+.2f}%*
 ⏱️ *Duration*: {days_held:.1f} Days ({hours_held:.0f} hours)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 *Exit Reason*: {reason}
-📱 *Revolut*: Close active position in Revolut app."""
+📱 *Revolut*: Close active position on 'BRENT:CFD' in Revolut app."""
 
         print(f"\n[>>> DISPATCHING CFD EXIT ALERT ({pnl_pct:+.2f}%) >>>]")
         self.notifier.send_message(msg, title=title, priority="high")
@@ -445,8 +472,8 @@ class BrentCFDEngine:
             status_line = f"Active {t_type} (Entry: ${e_p:.2f}, P&L: {pnl:+.2f}%)"
 
         chg_str = f" ({chg_24h_pct:+.2f}% / {chg_24h_val:+.2f}$ Today)" if chg_24h_pct != 0.0 else ""
-        title = f"🛢️ [Revolut BRNT] Market Pulse: ${price:.2f}"
-        msg = f"""🛢️ *Revolut Crude Tracker (BRNT)*: *${price:.2f}*{chg_str}
+        title = f"🛢️ [Revolut BRENT:CFD] Market Pulse: ${price:.2f}"
+        msg = f"""🛢️ *Revolut BRENT:CFD (Crude Oil Brent)*: *${price:.2f}*{chg_str}
 📊 *1H RSI*: {rsi:.1f} | *14H ATR*: ${atr:.2f}
 🧠 *AI News Regime*: {news_eval.get('regime', 'NEUTRAL')} ({news_eval.get('score', 0.0):+.2f})
 📋 *Position Status*: {status_line}
@@ -462,7 +489,7 @@ class BrentCFDEngine:
     def run_single_cycle(self, send_pulse_if_due: bool = True) -> Dict[str, Any]:
         """Execute one complete 5-minute news & price scan cycle."""
         now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        print(f"\n[{now_str}] 🔍 Scanning Revolut Crude Oil Tracker ({self.symbol})...")
+        print(f"\n[{now_str}] 🔍 Scanning {self.asset_name} ({self.symbol})...")
 
         df = self.fetch_market_data()
         df = self.compute_technical_indicators(df)
@@ -552,7 +579,7 @@ class BrentCFDEngine:
         Designed for persistent GitHub Actions runners and local background operation.
         """
         print("=" * 70)
-        print("   🛢️ REVOLUT CRUDE OIL TRACKER (BRNT) 24/7 CFD SWING ENGINE")
+        print("   🛢️ REVOLUT BRENT:CFD 24/7 SWING ENGINE STARTED")
         print(f"  • Asset: {self.asset_name} ({self.symbol})")
         print(f"  • Scan Interval: Every {interval_seconds} seconds ({interval_seconds/60:.1f} mins)")
         print(f"  • Session Duration: {duration_minutes} minutes ({duration_minutes/60:.1f} hours)")
