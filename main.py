@@ -236,9 +236,24 @@ def run_brent_pulse(args):
     engine.notify_market_pulse(price, news_eval, rsi, atr, chg_24h_pct, chg_24h_val)
 
 
+def run_calibrate(args):
+    from brent_cfd_engine import BrentCFDEngine
+    engine = BrentCFDEngine(ntfy_topic=args.ntfy or "buzi-bot")
+    offset = engine.calibrate_to_revolut(args.price)
+    print(f"[✓] Successfully calibrated engine to Revolut price ${args.price:.2f} (basis offset: {offset:+.2f}$)")
+    if getattr(args, "pulse", True):
+        run_brent_pulse(args)
+
+
 def main():
     parser = argparse.ArgumentParser(description="Brent Crude Oil CFD & Equities 24/7 Trading Engine")
     subparsers = parser.add_subparsers(dest="command", help="Available subcommands")
+
+    # Brent CFD Basis Calibration
+    calibrate_parser = subparsers.add_parser("calibrate", help="Calibrate bot price to Revolut app price")
+    calibrate_parser.add_argument("--price", type=float, required=True, help="Current price shown on Revolut screen (e.g. 103.48)")
+    calibrate_parser.add_argument("--ntfy", type=str, default="buzi-bot")
+    calibrate_parser.add_argument("--no-pulse", dest="pulse", action="store_false", help="Do not send pulse after calibration")
 
     # Brent CFD 24/7 Continuous Daemon (Primary mode)
     brent_daemon_parser = subparsers.add_parser("brent-daemon", help="Run 24/7 continuous Brent Crude CFD monitoring loop")
@@ -298,7 +313,9 @@ def main():
 
     args = parser.parse_args()
 
-    if args.command == "brent-daemon":
+    if args.command == "calibrate":
+        run_calibrate(args)
+    elif args.command == "brent-daemon":
         run_brent_daemon(args)
     elif args.command == "brent-scan":
         run_brent_scan(args)

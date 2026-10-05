@@ -54,8 +54,8 @@ class BrentCFDEngine:
     """Dedicated Revolut BRENT:CFD (Crude Oil Brent) 24/7 Swing Trading Engine."""
 
     def __init__(self, ntfy_topic: str = "buzi-bot", symbol: Optional[str] = None):
-        # Revolut's "BRENT:CFD · Crude Oil Brent" trades the active front-month contract (BZX26.NYM at ~$103.87)
-        self.symbol = symbol or os.getenv("BRENT_SYMBOL") or get_revolut_brent_symbol()
+        # Continuous ICE Brent futures (BZ=F) + Revolut Cash CFD basis calibration offset
+        self.symbol = symbol or os.getenv("BRENT_SYMBOL", "BZ=F")
         self.asset_name = "Revolut BRENT:CFD (Crude Oil Brent)"
         self.ntfy_topic = ntfy_topic or os.getenv("NTFY_TOPIC", "buzi-bot")
         self.notifier = UniversalNotifier(ntfy_topic=self.ntfy_topic)
@@ -63,6 +63,7 @@ class BrentCFDEngine:
         
         self.state_file = Path(__file__).parent / "daemon_state.json"
         self.state = self._load_state()
+        self.basis_offset = float(self.state.get("basis_offset", 3.29))
 
     def _load_state(self) -> Dict[str, Any]:
         default_state = {
@@ -70,6 +71,7 @@ class BrentCFDEngine:
             "last_signal": "NONE",
             "last_pulse_time": 0,
             "last_news_hash": "",
+            "basis_offset": 3.29,
             "trade_history": []
         }
         if self.state_file.exists():
@@ -80,12 +82,14 @@ class BrentCFDEngine:
                         data["active_trade"] = None
                     if "trade_history" not in data:
                         data["trade_history"] = []
+                    if "basis_offset" not in data:
+                        data["basis_offset"] = 3.29
                     
-                    # Safety check: Invalidate any active trade from a different or legacy symbol (e.g. BZ=F)
+                    # Safety check: Invalidate any active trade from a different or legacy symbol (e.g. CL=F)
                     if data.get("active_trade"):
                         t_sym = data["active_trade"].get("symbol", "")
-                        if t_sym != self.symbol:
-                            print(f"[!] Discarding legacy active trade from prior symbol ({t_sym or 'Legacy'} vs current {self.symbol})")
+                        if t_sym and t_sym != self.symbol:
+                            print(f"[!] Discarding legacy active trade from prior symbol ({t_sym} vs current {self.symbol})")
                             data["active_trade"] = None
                     return data
             except Exception as e:
@@ -99,40 +103,65 @@ class BrentCFDEngine:
         except Exception as e:
             print(f"[!] Error saving state: {e}")
 
+    def calibrate_to_revolut(self, target_price: float) -> float:
+        """Calibrate the basis offset so engine candles match the Revolut app price."""
+        old_offset = self.basis_offset
+        self.basis_offset = 0.0
+        df = self.fetch_market_data()
+        raw_price = float(df['Close'].iloc[-1])
+        new_offset = round(target_price - raw_price, 2)
+        self.basis_offset = new_offset
+        self.state["basis_offset"] = new_offset
+        self._save_state()
+        print(f"[✓] Calibrated basis offset: {new_offset:+.2f}$ (Raw: ${raw_price:.2f} -> Revolut: ${target_price:.2f})")
+        return new_offset
+
     # =========================================================================
     # 1. Market Data Fetching (1-Hour Candles for 2-3 Day Swing Horizons)
     # =========================================================================
     def fetch_market_data(self) -> pd.DataFrame:
-        """Fetch latest 1-hour candles for Revolut Crude Tracker (CL=F)."""
+        """Fetch latest 1-hour candles calibrated to Revolut BRENT:CFD price."""
+        df = None
         try:
             ticker = yf.Ticker(self.symbol)
-            df = ticker.history(period="1mo", interval="1h", auto_adjust=True)
-            if not df.empty and len(df) >= 30:
-                df.index = pd.to_datetime(df.index).tz_localize(None)
-                return df[['Open', 'High', 'Low', 'Close', 'Volume']].dropna()
+            d = ticker.history(period="1mo", interval="1h", auto_adjust=True)
+            if not d.empty and len(d) >= 30:
+                d.index = pd.to_datetime(d.index).tz_localize(None)
+                df = d[['Open', 'High', 'Low', 'Close', 'Volume']].dropna()
         except Exception as e:
             print(f"[!] yfinance fetch error: {e}")
 
         # Fallback to direct Yahoo Finance chart API
-        try:
-            import urllib.request
-            url = f"https://query1.finance.yahoo.com/v8/finance/chart/{self.symbol}?interval=1h&range=1mo"
-            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-            with urllib.request.urlopen(req, timeout=15) as resp:
-                raw = json.loads(resp.read().decode())
-                res = raw["chart"]["result"][0]
-                timestamps = res["timestamp"]
-                q = res["indicators"]["quote"][0]
-                df = pd.DataFrame({
-                    "Open": q["open"],
-                    "High": q["high"],
-                    "Low": q["low"],
-                    "Close": q["close"],
-                    "Volume": q.get("volume", [0]*len(q["open"]))
-                }, index=pd.to_datetime(timestamps, unit="s")).dropna()
-                return df
-        except Exception as e2:
-            print(f"[!] Yahoo REST fallback error: {e2}")
+        if df is None or df.empty:
+            try:
+                import urllib.request
+                url = f"https://query1.finance.yahoo.com/v8/finance/chart/{self.symbol}?interval=1h&range=1mo"
+                req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+                with urllib.request.urlopen(req, timeout=15) as resp:
+                    raw = json.loads(resp.read().decode())
+                    res = raw["chart"]["result"][0]
+                    timestamps = res["timestamp"]
+                    q = res["indicators"]["quote"][0]
+                    df = pd.DataFrame({
+                        "Open": q["open"],
+                        "High": q["high"],
+                        "Low": q["low"],
+                        "Close": q["close"],
+                        "Volume": q.get("volume", [0]*len(q["open"]))
+                    }, index=pd.to_datetime(timestamps, unit="s")).dropna()
+            except Exception as e2:
+                print(f"[!] Yahoo REST fallback error: {e2}")
+
+        if df is None or df.empty:
+            raise RuntimeError(f"Failed to fetch market data for {self.symbol} from all sources.")
+
+        # Apply basis calibration offset so candles match Revolut BRENT:CFD cash quote directly
+        if self.basis_offset != 0.0:
+            for col in ['Open', 'High', 'Low', 'Close']:
+                if col in df.columns:
+                    df[col] = df[col] + self.basis_offset
+
+        return df
 
         raise RuntimeError("Failed to fetch Crude Oil market data from all sources.")
 

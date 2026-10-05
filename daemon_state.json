@@ -1,51 +1,8 @@
 {
-  "active_trade": {
-    "symbol": "BZZ26.NYM",
-    "type": "LONG",
-    "entry_price": 102.70999908447266,
-    "entry_time": "2026-10-05T09:24:08.438276",
-    "stop_loss": 101.6,
-    "take_profit": 104.56,
-    "highest_price": 102.70999908447266,
-    "lowest_price": 102.70999908447266,
-    "atr_entry": 0.7414289202008929,
-    "catalyst": "Despite headlines regarding G-7 strategic releases and recovering Middle East exports, crude prices are holding firm near $102.71 with bullish technical momentum, driven by persistent Strait of Hormuz transit risks and ongoing physical market tightness."
-  },
-  "last_signal": "LONG",
-  "last_pulse_time": 1791178641.0577974,
+  "active_trade": null,
+  "last_signal": "NONE",
+  "last_pulse_time": 0,
   "last_news_hash": "",
-  "trade_history": [
-    {
-      "symbol": "CL=F",
-      "type": "SHORT",
-      "entry_price": 89.9800033569336,
-      "entry_time": "2026-10-01T00:11:27.475193",
-      "stop_loss": 89.91,
-      "take_profit": 88.39,
-      "highest_price": 89.9800033569336,
-      "lowest_price": 89.12999725341797,
-      "atr_entry": 0.6357143947056362,
-      "catalyst": "Crude oil exports through the Strait of Hormuz returning to prewar levels deflates the geopolitical risk premium, weighing on prices despite lingering intraday bullish momentum and ongoing 2026 supply concerns.",
-      "exit_price": 90.33999633789062,
-      "exit_time": "2026-10-01T06:51:30.896749",
-      "pnl_pct": -0.40008109305020517,
-      "reason": "\ud83d\uded1 Stop Loss Triggered ($90.34 >= $89.91)"
-    },
-    {
-      "symbol": "BZZ26.NYM",
-      "type": "LONG",
-      "entry_price": 102.25,
-      "entry_time": "2026-10-04T05:55:44.793124",
-      "stop_loss": 101.85,
-      "take_profit": 105.11,
-      "highest_price": 102.94999694824219,
-      "lowest_price": 102.25,
-      "atr_entry": 1.1449993678501673,
-      "catalyst": "Despite reports of Strait of Hormuz export flows returning to pre-war levels, oil prices are surging following Trump's rejection of Iran's reopening plan, indicating that geopolitical risk premiums and severe fuel shipment constraints continue to heavily outweigh normalized crude transit data.",
-      "exit_price": 101.5,
-      "exit_time": "2026-10-05T06:03:24.278694",
-      "pnl_pct": -0.7334963325183375,
-      "reason": "\ud83d\uded1 Stop Loss Triggered ($101.50 <= $101.85)"
-    }
-  ]
+  "basis_offset": 3.29,
+  "trade_history": []
 }
