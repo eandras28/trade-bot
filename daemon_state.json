@@ -2,17 +2,17 @@
   "active_trade": {
     "symbol": "BZZ26.NYM",
     "type": "LONG",
-    "entry_price": 102.25,
-    "entry_time": "2026-10-04T05:55:44.793124",
-    "stop_loss": 101.44,
-    "take_profit": 105.11,
-    "highest_price": 102.94999694824219,
-    "lowest_price": 102.25,
-    "atr_entry": 1.1449993678501673,
-    "catalyst": "Despite reports of Strait of Hormuz export flows returning to pre-war levels, oil prices are surging following Trump's rejection of Iran's reopening plan, indicating that geopolitical risk premiums and severe fuel shipment constraints continue to heavily outweigh normalized crude transit data."
+    "entry_price": 102.70999908447266,
+    "entry_time": "2026-10-05T09:24:08.438276",
+    "stop_loss": 101.6,
+    "take_profit": 104.56,
+    "highest_price": 102.70999908447266,
+    "lowest_price": 102.70999908447266,
+    "atr_entry": 0.7414289202008929,
+    "catalyst": "Despite headlines regarding G-7 strategic releases and recovering Middle East exports, crude prices are holding firm near $102.71 with bullish technical momentum, driven by persistent Strait of Hormuz transit risks and ongoing physical market tightness."
   },
   "last_signal": "LONG",
-  "last_pulse_time": 1791142573.6551518,
+  "last_pulse_time": 1791178641.0577974,
   "last_news_hash": "",
   "trade_history": [
     {
@@ -30,6 +30,22 @@
       "exit_time": "2026-10-01T06:51:30.896749",
       "pnl_pct": -0.40008109305020517,
       "reason": "\ud83d\uded1 Stop Loss Triggered ($90.34 >= $89.91)"
+    },
+    {
+      "symbol": "BZZ26.NYM",
+      "type": "LONG",
+      "entry_price": 102.25,
+      "entry_time": "2026-10-04T05:55:44.793124",
+      "stop_loss": 101.85,
+      "take_profit": 105.11,
+      "highest_price": 102.94999694824219,
+      "lowest_price": 102.25,
+      "atr_entry": 1.1449993678501673,
+      "catalyst": "Despite reports of Strait of Hormuz export flows returning to pre-war levels, oil prices are surging following Trump's rejection of Iran's reopening plan, indicating that geopolitical risk premiums and severe fuel shipment constraints continue to heavily outweigh normalized crude transit data.",
+      "exit_price": 101.5,
+      "exit_time": "2026-10-05T06:03:24.278694",
+      "pnl_pct": -0.7334963325183375,
+      "reason": "\ud83d\uded1 Stop Loss Triggered ($101.50 <= $101.85)"
     }
   ]
 }
