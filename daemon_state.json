@@ -2,18 +2,35 @@
   "active_trade": {
     "symbol": "BZ=F",
     "type": "SHORT",
-    "entry_price": 103.48000244140626,
-    "entry_time": "2026-10-05T22:58:01.324151",
-    "stop_loss": 104.35,
-    "take_profit": 100.85,
-    "highest_price": 103.48000244140626,
-    "lowest_price": 103.48000244140626,
-    "atr_entry": 1.0528548104422433,
-    "catalyst": "Unexpected inventory builds or weak refinery demand pressuring prices."
+    "entry_price": 101.40000061035157,
+    "entry_time": "2026-10-06T13:27:15.645879",
+    "stop_loss": 102.41,
+    "take_profit": 99.57,
+    "highest_price": 101.40000061035157,
+    "lowest_price": 101.30000213623048,
+    "atr_entry": 0.7321444920131138,
+    "catalyst": "Crude prices are tumbling amid easing Strait of Hormuz supply concerns, rising regional exports, and G-7 plans for strategic crude and diesel releases. Despite lingering tail-risk commentary regarding tanker vulnerabilities, physical supply normalization and prevailing bearish momentum dominate the near-term outlook."
   },
   "last_signal": "SHORT",
-  "last_pulse_time": 1791249500.222496,
+  "last_pulse_time": 1791285367.2961972,
   "last_news_hash": "",
   "basis_offset": 3.29,
-  "trade_history": []
+  "trade_history": [
+    {
+      "symbol": "BZ=F",
+      "type": "SHORT",
+      "entry_price": 103.48000244140626,
+      "entry_time": "2026-10-05T22:58:01.324151",
+      "stop_loss": 101.65,
+      "take_profit": 100.85,
+      "highest_price": 103.48000244140626,
+      "lowest_price": 100.67999938964844,
+      "atr_entry": 1.0528548104422433,
+      "catalyst": "Unexpected inventory builds or weak refinery demand pressuring prices.",
+      "exit_price": 100.67999938964844,
+      "exit_time": "2026-10-06T12:31:14.195179",
+      "pnl_pct": 2.705839761980355,
+      "reason": "\ud83c\udfaf Take Profit Hit ($100.68 <= $100.85)"
+    }
+  ]
 }
