@@ -1,18 +1,18 @@
 {
   "active_trade": {
     "symbol": "BZ=F",
-    "type": "SHORT",
-    "entry_price": 101.40000061035157,
-    "entry_time": "2026-10-06T13:27:15.645879",
-    "stop_loss": 102.41,
-    "take_profit": 99.57,
-    "highest_price": 101.40000061035157,
-    "lowest_price": 101.30000213623048,
-    "atr_entry": 0.7321444920131138,
-    "catalyst": "Crude prices are tumbling amid easing Strait of Hormuz supply concerns, rising regional exports, and G-7 plans for strategic crude and diesel releases. Despite lingering tail-risk commentary regarding tanker vulnerabilities, physical supply normalization and prevailing bearish momentum dominate the near-term outlook."
+    "type": "LONG",
+    "entry_price": 104.40000061035157,
+    "entry_time": "2026-10-06T22:13:34.546151",
+    "stop_loss": 103.15,
+    "take_profit": 106.48,
+    "highest_price": 104.40000061035157,
+    "lowest_price": 104.40000061035157,
+    "atr_entry": 0.8300023760114398,
+    "catalyst": "Escalating maritime attacks in the Strait of Hormuz threaten vital crude export flows, outweighing short-term recovery reports and reinforcing a strong geopolitical risk premium. This supply vulnerability, compounded by EIA reports of inventory depletion from the Iran conflict, drives aggressive bullish momentum that easily overrides minor technical resistance."
   },
-  "last_signal": "SHORT",
-  "last_pulse_time": 1791285367.2961972,
+  "last_signal": "LONG",
+  "last_pulse_time": 1791310863.0840075,
   "last_news_hash": "",
   "basis_offset": 3.29,
   "trade_history": [
@@ -31,6 +31,22 @@
       "exit_time": "2026-10-06T12:31:14.195179",
       "pnl_pct": 2.705839761980355,
       "reason": "\ud83c\udfaf Take Profit Hit ($100.68 <= $100.85)"
+    },
+    {
+      "symbol": "BZ=F",
+      "type": "SHORT",
+      "entry_price": 101.40000061035157,
+      "entry_time": "2026-10-06T13:27:15.645879",
+      "stop_loss": 102.41,
+      "take_profit": 99.57,
+      "highest_price": 101.40000061035157,
+      "lowest_price": 101.30000213623048,
+      "atr_entry": 0.7321444920131138,
+      "catalyst": "Crude prices are tumbling amid easing Strait of Hormuz supply concerns, rising regional exports, and G-7 plans for strategic crude and diesel releases. Despite lingering tail-risk commentary regarding tanker vulnerabilities, physical supply normalization and prevailing bearish momentum dominate the near-term outlook.",
+      "exit_price": 103.45000366210938,
+      "exit_time": "2026-10-06T18:21:05.703842",
+      "pnl_pct": -2.021699249919467,
+      "reason": "\ud83d\uded1 Stop Loss Triggered ($103.45 >= $102.41)"
     }
   ]
 }
