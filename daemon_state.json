@@ -4,7 +4,7 @@
     "type": "LONG",
     "entry_price": 104.40000061035157,
     "entry_time": "2026-10-06T22:13:34.546151",
-    "stop_loss": 104.22,
+    "stop_loss": 104.38,
     "take_profit": 106.48,
     "highest_price": 105.05999664306641,
     "lowest_price": 104.40000061035157,
@@ -12,7 +12,7 @@
     "catalyst": "Escalating maritime attacks in the Strait of Hormuz threaten vital crude export flows, outweighing short-term recovery reports and reinforcing a strong geopolitical risk premium. This supply vulnerability, compounded by EIA reports of inventory depletion from the Iran conflict, drives aggressive bullish momentum that easily overrides minor technical resistance."
   },
   "last_signal": "LONG",
-  "last_pulse_time": 1791330504.246843,
+  "last_pulse_time": 1791352661.0634577,
   "last_news_hash": "",
   "basis_offset": 3.29,
   "trade_history": [
