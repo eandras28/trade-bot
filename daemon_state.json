@@ -1,18 +1,18 @@
 {
   "active_trade": {
     "symbol": "BZ=F",
-    "type": "LONG",
-    "entry_price": 107.05999664306641,
-    "entry_time": "2026-10-08T16:32:16.571457",
-    "stop_loss": 106.7,
-    "take_profit": 109.28,
-    "highest_price": 107.98000244140626,
-    "lowest_price": 107.05999664306641,
-    "atr_entry": 0.8864288330078125,
-    "catalyst": "Crude prices are rallying past $107/bbl, driven by severe physical supply risks stemming from escalating Strait of Hormuz tanker attacks, potential U.S. strikes on Iran, and emerging U.S. Gulf hurricane threats. Geopolitical risk premiums are aggressively expanding alongside strong bullish technical momentum."
+    "type": "SHORT",
+    "entry_price": 106.2700033569336,
+    "entry_time": "2026-10-09T08:23:34.104863",
+    "stop_loss": 106.56,
+    "take_profit": 104.99,
+    "highest_price": 106.2700033569336,
+    "lowest_price": 105.80000213623048,
+    "atr_entry": 0.5121416364397321,
+    "catalyst": "Despite lingering geopolitical risks around the Strait of Hormuz, prices are retreating toward $106.27 as commentary on potential Iran talks eases immediate supply panic. This headline-driven relief aligns with ongoing bearish 1H technical momentum and highlights that domestic refinery constraints rather than raw crude deficits are currently keeping end-user fuel elevated."
   },
-  "last_signal": "LONG",
-  "last_pulse_time": 1791494360.6916835,
+  "last_signal": "SHORT",
+  "last_pulse_time": 1791525999.8654206,
   "last_news_hash": "",
   "basis_offset": 3.29,
   "trade_history": [
@@ -79,6 +79,22 @@
       "exit_time": "2026-10-08T08:42:34.313461",
       "pnl_pct": 1.5283044911076193,
       "reason": "\ud83c\udfaf Take Profit Hit ($107.62 >= $107.59)"
+    },
+    {
+      "symbol": "BZ=F",
+      "type": "LONG",
+      "entry_price": 107.05999664306641,
+      "entry_time": "2026-10-08T16:32:16.571457",
+      "stop_loss": 106.9,
+      "take_profit": 109.28,
+      "highest_price": 107.98000244140626,
+      "lowest_price": 107.05999664306641,
+      "atr_entry": 0.8864288330078125,
+      "catalyst": "Crude prices are rallying past $107/bbl, driven by severe physical supply risks stemming from escalating Strait of Hormuz tanker attacks, potential U.S. strikes on Iran, and emerging U.S. Gulf hurricane threats. Geopolitical risk premiums are aggressively expanding alongside strong bullish technical momentum.",
+      "exit_price": 106.22000030517579,
+      "exit_time": "2026-10-09T06:07:02.982076",
+      "pnl_pct": -0.7846033665507556,
+      "reason": "\ud83d\uded1 Stop Loss Triggered ($106.22 <= $106.70)"
     }
   ]
 }
