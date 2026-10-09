@@ -4,7 +4,7 @@
     "type": "LONG",
     "entry_price": 107.05999664306641,
     "entry_time": "2026-10-08T16:32:16.571457",
-    "stop_loss": 106.54,
+    "stop_loss": 106.7,
     "take_profit": 109.28,
     "highest_price": 107.98000244140626,
     "lowest_price": 107.05999664306641,
@@ -12,7 +12,7 @@
     "catalyst": "Crude prices are rallying past $107/bbl, driven by severe physical supply risks stemming from escalating Strait of Hormuz tanker attacks, potential U.S. strikes on Iran, and emerging U.S. Gulf hurricane threats. Geopolitical risk premiums are aggressively expanding alongside strong bullish technical momentum."
   },
   "last_signal": "LONG",
-  "last_pulse_time": 1791473730.6894546,
+  "last_pulse_time": 1791494360.6916835,
   "last_news_hash": "",
   "basis_offset": 3.29,
   "trade_history": [
