@@ -1,18 +1,18 @@
 {
   "active_trade": {
     "symbol": "BZ=F",
-    "type": "SHORT",
-    "entry_price": 106.2700033569336,
-    "entry_time": "2026-10-09T08:23:34.104863",
-    "stop_loss": 106.56,
-    "take_profit": 104.99,
-    "highest_price": 106.2700033569336,
-    "lowest_price": 105.80000213623048,
-    "atr_entry": 0.5121416364397321,
-    "catalyst": "Despite lingering geopolitical risks around the Strait of Hormuz, prices are retreating toward $106.27 as commentary on potential Iran talks eases immediate supply panic. This headline-driven relief aligns with ongoing bearish 1H technical momentum and highlights that domestic refinery constraints rather than raw crude deficits are currently keeping end-user fuel elevated."
+    "type": "LONG",
+    "entry_price": 107.22000030517579,
+    "entry_time": "2026-10-09T19:06:20.077518",
+    "stop_loss": 105.98,
+    "take_profit": 109.32,
+    "highest_price": 107.22000030517579,
+    "lowest_price": 107.22000030517579,
+    "atr_entry": 0.8392862592424665,
+    "catalyst": "Escalating tanker attacks in the Strait of Hormuz combined with Hurricane Isaias supply disruptions inject a massive geopolitical risk premium into the market. Despite slight intraday profit-taking (-0.38%), physical chokepoint threats and bullish technical momentum heavily favor upside continuation."
   },
-  "last_signal": "SHORT",
-  "last_pulse_time": 1791525999.8654206,
+  "last_signal": "LONG",
+  "last_pulse_time": 1791559137.9150052,
   "last_news_hash": "",
   "basis_offset": 3.29,
   "trade_history": [
@@ -95,6 +95,54 @@
       "exit_time": "2026-10-09T06:07:02.982076",
       "pnl_pct": -0.7846033665507556,
       "reason": "\ud83d\uded1 Stop Loss Triggered ($106.22 <= $106.70)"
+    },
+    {
+      "symbol": "BZ=F",
+      "type": "SHORT",
+      "entry_price": 106.2700033569336,
+      "entry_time": "2026-10-09T08:23:34.104863",
+      "stop_loss": 106.56,
+      "take_profit": 104.99,
+      "highest_price": 106.2700033569336,
+      "lowest_price": 105.80000213623048,
+      "atr_entry": 0.5121416364397321,
+      "catalyst": "Despite lingering geopolitical risks around the Strait of Hormuz, prices are retreating toward $106.27 as commentary on potential Iran talks eases immediate supply panic. This headline-driven relief aligns with ongoing bearish 1H technical momentum and highlights that domestic refinery constraints rather than raw crude deficits are currently keeping end-user fuel elevated.",
+      "exit_price": 108.30999664306641,
+      "exit_time": "2026-10-09T15:18:59.989318",
+      "pnl_pct": -1.919632277869607,
+      "reason": "\ud83d\uded1 Stop Loss Triggered ($108.31 >= $106.56)"
+    },
+    {
+      "symbol": "BZ=F",
+      "type": "LONG",
+      "entry_price": 108.24999908447266,
+      "entry_time": "2026-10-09T15:24:02.540387",
+      "stop_loss": 107.23,
+      "take_profit": 109.96,
+      "highest_price": 108.24999908447266,
+      "lowest_price": 108.24999908447266,
+      "atr_entry": 0.6828575134277344,
+      "catalyst": "Escalating Iranian attacks in the Strait of Hormuz and broader Middle East tensions are rapidly re-pricing geopolitical risk premiums into crude, overpowering recent refinery-driven product margin dislocations.",
+      "exit_price": 107.15000061035157,
+      "exit_time": "2026-10-09T16:54:50.522187",
+      "pnl_pct": -1.0161648807615344,
+      "reason": "\ud83d\uded1 Stop Loss Triggered ($107.15 <= $107.23)"
+    },
+    {
+      "symbol": "BZ=F",
+      "type": "LONG",
+      "entry_price": 107.27999786376954,
+      "entry_time": "2026-10-09T16:59:53.124170",
+      "stop_loss": 107.01,
+      "take_profit": 109.08,
+      "highest_price": 108.12999633789063,
+      "lowest_price": 107.27999786376954,
+      "atr_entry": 0.7192856924874442,
+      "catalyst": "Escalating Iranian attacks in the Strait of Hormuz and active hurricane supply disruptions have supercharged the geopolitical risk premium, aligning with strong bullish technical momentum to drive prices higher.",
+      "exit_price": 106.69000152587891,
+      "exit_time": "2026-10-09T19:01:17.359596",
+      "pnl_pct": -0.549959311744056,
+      "reason": "\ud83d\uded1 Stop Loss Triggered ($106.69 <= $107.01)"
     }
   ]
 }
