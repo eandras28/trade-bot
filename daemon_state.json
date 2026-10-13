@@ -1,7 +1,18 @@
 {
-  "active_trade": null,
-  "last_signal": "EXIT",
-  "last_pulse_time": 1791856863.8323522,
+  "active_trade": {
+    "symbol": "BZ=F",
+    "type": "SHORT",
+    "entry_price": 109.05999664306641,
+    "entry_time": "2026-10-13T15:08:20.303322",
+    "stop_loss": 109.79,
+    "take_profit": 107.62,
+    "highest_price": 109.05999664306641,
+    "lowest_price": 108.95999816894532,
+    "atr_entry": 0.577857426234654,
+    "catalyst": "Unexpected inventory builds or weak refinery demand pressuring prices."
+  },
+  "last_signal": "SHORT",
+  "last_pulse_time": 1791891993.6620958,
   "last_news_hash": "",
   "basis_offset": 3.29,
   "trade_history": [
@@ -180,6 +191,38 @@
       "exit_time": "2026-10-12T20:20:05.360104",
       "pnl_pct": -0.7896842505916544,
       "reason": "\ud83d\uded1 Stop Loss Triggered ($109.30 <= $109.36)"
+    },
+    {
+      "symbol": "BZ=F",
+      "type": "SHORT",
+      "entry_price": 108.04,
+      "entry_time": "2026-10-13T11:50:54.203450",
+      "stop_loss": 108.71,
+      "take_profit": 106.8,
+      "highest_price": 108.04,
+      "lowest_price": 107.90000061035157,
+      "atr_entry": 0.4964278084891183,
+      "catalyst": "Crude transit through the Strait of Hormuz has normalized to prewar levels and widespread refinery outages are depressing crude feedstock demand in favor of refined product cracks, aligning with the negative price momentum and debunking backward-looking bullish headlines.",
+      "exit_price": 108.91999725341798,
+      "exit_time": "2026-10-13T13:25:20.386625",
+      "pnl_pct": -0.8145106010903079,
+      "reason": "\ud83d\uded1 Stop Loss Triggered ($108.92 >= $108.71)"
+    },
+    {
+      "symbol": "BZ=F",
+      "type": "SHORT",
+      "entry_price": 108.70000366210938,
+      "entry_time": "2026-10-13T13:31:07.625883",
+      "stop_loss": 109.23,
+      "take_profit": 107.27,
+      "highest_price": 108.70000366210938,
+      "lowest_price": 108.3899984741211,
+      "atr_entry": 0.5707141331263951,
+      "catalyst": "Despite current price weakness ($108.70, down 1.41%), recurring downward revisions in global demand forecasts by OPEC, normalization of Strait of Hormuz export flows, and strategic infrastructure bypass plans outweigh near-term geopolitical noise, reinforcing bearish near-term momentum.",
+      "exit_price": 109.24999908447266,
+      "exit_time": "2026-10-13T14:38:04.262927",
+      "pnl_pct": -0.5059755325058913,
+      "reason": "\ud83d\uded1 Stop Loss Triggered ($109.25 >= $109.23)"
     }
   ]
 }
