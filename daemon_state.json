@@ -1,18 +1,18 @@
 {
   "active_trade": {
     "symbol": "BZ=F",
-    "type": "SHORT",
-    "entry_price": 109.05999664306641,
-    "entry_time": "2026-10-13T15:08:20.303322",
-    "stop_loss": 109.79,
-    "take_profit": 107.62,
-    "highest_price": 109.05999664306641,
-    "lowest_price": 108.95999816894532,
-    "atr_entry": 0.577857426234654,
-    "catalyst": "Unexpected inventory builds or weak refinery demand pressuring prices."
+    "type": "LONG",
+    "entry_price": 109.83000091552735,
+    "entry_time": "2026-10-13T20:36:54.546905",
+    "stop_loss": 108.97,
+    "take_profit": 111.46,
+    "highest_price": 109.83000091552735,
+    "lowest_price": 109.83000091552735,
+    "atr_entry": 0.6507143293108258,
+    "catalyst": "Escalating geopolitical kinetic risks in the Strait of Hormuz and tanker incidents are rapidly expanding the Middle East risk premium, overriding OPEC's backward-looking output increases and driving prices firmly higher despite overbought technicals."
   },
-  "last_signal": "SHORT",
-  "last_pulse_time": 1791891993.6620958,
+  "last_signal": "LONG",
+  "last_pulse_time": 1791918965.8356864,
   "last_news_hash": "",
   "basis_offset": 3.29,
   "trade_history": [
@@ -223,6 +223,22 @@
       "exit_time": "2026-10-13T14:38:04.262927",
       "pnl_pct": -0.5059755325058913,
       "reason": "\ud83d\uded1 Stop Loss Triggered ($109.25 >= $109.23)"
+    },
+    {
+      "symbol": "BZ=F",
+      "type": "SHORT",
+      "entry_price": 109.05999664306641,
+      "entry_time": "2026-10-13T15:08:20.303322",
+      "stop_loss": 109.79,
+      "take_profit": 107.62,
+      "highest_price": 109.05999664306641,
+      "lowest_price": 108.95999816894532,
+      "atr_entry": 0.577857426234654,
+      "catalyst": "Unexpected inventory builds or weak refinery demand pressuring prices.",
+      "exit_price": 109.9899969482422,
+      "exit_time": "2026-10-13T20:31:51.746934",
+      "pnl_pct": -0.8527419161945361,
+      "reason": "\ud83d\uded1 Stop Loss Triggered ($109.99 >= $109.79)"
     }
   ]
 }
