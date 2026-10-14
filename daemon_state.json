@@ -1,18 +1,7 @@
 {
-  "active_trade": {
-    "symbol": "BZ=F",
-    "type": "LONG",
-    "entry_price": 109.83000091552735,
-    "entry_time": "2026-10-13T20:36:54.546905",
-    "stop_loss": 109.62,
-    "take_profit": 111.46,
-    "highest_price": 110.41000274658204,
-    "lowest_price": 109.83000091552735,
-    "atr_entry": 0.6507143293108258,
-    "catalyst": "Escalating geopolitical kinetic risks in the Strait of Hormuz and tanker incidents are rapidly expanding the Middle East risk premium, overriding OPEC's backward-looking output increases and driving prices firmly higher despite overbought technicals."
-  },
-  "last_signal": "LONG",
-  "last_pulse_time": 1791935026.536178,
+  "active_trade": null,
+  "last_signal": "EXIT",
+  "last_pulse_time": 1791953733.1259239,
   "last_news_hash": "",
   "basis_offset": 3.29,
   "trade_history": [
@@ -239,6 +228,38 @@
       "exit_time": "2026-10-13T20:31:51.746934",
       "pnl_pct": -0.8527419161945361,
       "reason": "\ud83d\uded1 Stop Loss Triggered ($109.99 >= $109.79)"
+    },
+    {
+      "symbol": "BZ=F",
+      "type": "LONG",
+      "entry_price": 109.83000091552735,
+      "entry_time": "2026-10-13T20:36:54.546905",
+      "stop_loss": 109.62,
+      "take_profit": 111.46,
+      "highest_price": 110.41000274658204,
+      "lowest_price": 109.83000091552735,
+      "atr_entry": 0.6507143293108258,
+      "catalyst": "Escalating geopolitical kinetic risks in the Strait of Hormuz and tanker incidents are rapidly expanding the Middle East risk premium, overriding OPEC's backward-looking output increases and driving prices firmly higher despite overbought technicals.",
+      "exit_price": 109.58000091552735,
+      "exit_time": "2026-10-14T04:55:36.777361",
+      "pnl_pct": -0.22762450870985645,
+      "reason": "\ud83d\uded1 Stop Loss Triggered ($109.58 <= $109.62)"
+    },
+    {
+      "symbol": "BZ=F",
+      "type": "LONG",
+      "entry_price": 109.56999877929688,
+      "entry_time": "2026-10-14T05:00:39.579029",
+      "stop_loss": 109.03,
+      "take_profit": 111.04,
+      "highest_price": 109.72000030517579,
+      "lowest_price": 109.56999877929688,
+      "atr_entry": 0.5864279610770089,
+      "catalyst": "Persistent geopolitical threats and targeting of transit in the Strait of Hormuz continue to sustain a vital risk premium, supporting upward momentum despite rising OPEC+ production and alternative pipeline expansion plans.",
+      "exit_price": 108.91999725341798,
+      "exit_time": "2026-10-14T08:10:20.725659",
+      "pnl_pct": -0.5932294725932983,
+      "reason": "\ud83d\uded1 Stop Loss Triggered ($108.92 <= $109.03)"
     }
   ]
 }
