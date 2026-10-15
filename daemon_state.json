@@ -1,7 +1,18 @@
 {
-  "active_trade": null,
-  "last_signal": "EXIT",
-  "last_pulse_time": 1792008719.0005283,
+  "active_trade": {
+    "symbol": "BZ=F",
+    "type": "SHORT",
+    "entry_price": 107.73000244140626,
+    "entry_time": "2026-10-15T06:04:50.827244",
+    "stop_loss": 108.18,
+    "take_profit": 106.36,
+    "highest_price": 107.73000244140626,
+    "lowest_price": 107.41000274658204,
+    "atr_entry": 0.5478570120675224,
+    "catalyst": "Despite conflicting headlines regarding Middle East chokepoint risks and inventory draws, current price action shows a decisive 1.54% pullback with bearish 1H momentum, indicating that profit-taking and easing sentiment are overriding geopolitical risk premiums in the very near term."
+  },
+  "last_signal": "SHORT",
+  "last_pulse_time": 1792039018.5085025,
   "last_news_hash": "",
   "basis_offset": 3.29,
   "trade_history": [
