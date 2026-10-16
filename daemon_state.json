@@ -1,7 +1,7 @@
 {
   "active_trade": null,
   "last_signal": "EXIT",
-  "last_pulse_time": 1792125003.1039708,
+  "last_pulse_time": 1792156521.83577,
   "last_news_hash": "",
   "basis_offset": 3.29,
   "trade_history": [
@@ -324,6 +324,22 @@
       "exit_time": "2026-10-16T07:45:12.330193",
       "pnl_pct": -2.403094206505132,
       "reason": "\ud83d\uded1 Stop Loss Triggered ($106.00 <= $108.18)"
+    },
+    {
+      "symbol": "BZ=F",
+      "type": "LONG",
+      "entry_price": 109.27999786376954,
+      "entry_time": "2026-10-16T13:15:31.269615",
+      "stop_loss": 109.92,
+      "take_profit": 111.4,
+      "highest_price": 111.5200033569336,
+      "lowest_price": 109.27999786376954,
+      "atr_entry": 0.8499995640345982,
+      "catalyst": "Crude is aggressively trading higher at $109.28 despite conflicting media reports, driven by severe supply anxiety from escalating attacks in the Strait of Hormuz that heavily outweigh potential shadow fleet sanctions relief and inventory headlines.",
+      "exit_price": 111.5200033569336,
+      "exit_time": "2026-10-16T16:37:48.615397",
+      "pnl_pct": 2.04978544743064,
+      "reason": "\ud83c\udfaf Take Profit Hit ($111.52 >= $111.40)"
     }
   ]
 }
