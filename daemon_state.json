@@ -1,7 +1,18 @@
 {
-  "active_trade": null,
-  "last_signal": "EXIT",
-  "last_pulse_time": 1792327006.1458979,
+  "active_trade": {
+    "symbol": "BZ=F",
+    "type": "LONG",
+    "entry_price": 112.17999938964844,
+    "entry_time": "2026-10-18T22:21:10.329091",
+    "stop_loss": 110.64,
+    "take_profit": 114.98,
+    "highest_price": 112.33000091552735,
+    "lowest_price": 112.17999938964844,
+    "atr_entry": 1.119286128452846,
+    "catalyst": "Crude prices have broken above $112 amid acute geopolitical disruptions in the Strait of Hormuz and intensifying Russia-Ukraine supply anxieties. The escalation in physical chokepoint risk premiums, combined with strong bullish momentum (1H EMA alignment), reinforces upward price continuation over the near term."
+  },
+  "last_signal": "LONG",
+  "last_pulse_time": 1792348699.637214,
   "last_news_hash": "",
   "basis_offset": 3.29,
   "trade_history": [
