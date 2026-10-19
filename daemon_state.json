@@ -1,7 +1,18 @@
 {
-  "active_trade": null,
-  "last_signal": "EXIT",
-  "last_pulse_time": 1792384812.2088435,
+  "active_trade": {
+    "symbol": "BZ=F",
+    "type": "LONG",
+    "entry_price": 112.45000366210938,
+    "entry_time": "2026-10-19T19:11:48.345702",
+    "stop_loss": 111.36,
+    "take_profit": 114.45,
+    "highest_price": 112.56999877929688,
+    "lowest_price": 112.45000366210938,
+    "atr_entry": 0.8014286586216518,
+    "catalyst": "Persistent geopolitical supply risks in the Strait of Hormuz and elevated retail product prices continue to underpin a bullish structural premium, even as minor profit-taking pulls crude slightly off intraday highs."
+  },
+  "last_signal": "LONG",
+  "last_pulse_time": 1792424129.0095544,
   "last_news_hash": "",
   "basis_offset": 3.29,
   "trade_history": [
@@ -356,6 +367,22 @@
       "exit_time": "2026-10-19T05:58:38.825934",
       "pnl_pct": -1.0251395365803722,
       "reason": "\ud83d\uded1 Stop Loss Triggered ($111.03 <= $111.07)"
+    },
+    {
+      "symbol": "BZ=F",
+      "type": "LONG",
+      "entry_price": 112.74999908447266,
+      "entry_time": "2026-10-19T16:26:40.625629",
+      "stop_loss": 112.57,
+      "take_profit": 114.52,
+      "highest_price": 113.72000030517579,
+      "lowest_price": 112.74999908447266,
+      "atr_entry": 0.7064290727887835,
+      "catalyst": "Despite conflicting headlines regarding temporary Russian sanction waivers and profit-taking pulling prices down from intraday peaks, spot prices remain resilient near $112.75 supported by ongoing Middle East geopolitical risk premiums and elevated Asian import demand.",
+      "exit_price": 112.45000366210938,
+      "exit_time": "2026-10-19T19:06:45.071845",
+      "pnl_pct": -0.26607133019887985,
+      "reason": "\ud83d\uded1 Stop Loss Triggered ($112.45 <= $112.57)"
     }
   ]
 }
