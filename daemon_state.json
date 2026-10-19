@@ -1,18 +1,7 @@
 {
-  "active_trade": {
-    "symbol": "BZ=F",
-    "type": "LONG",
-    "entry_price": 112.17999938964844,
-    "entry_time": "2026-10-18T22:21:10.329091",
-    "stop_loss": 110.64,
-    "take_profit": 114.98,
-    "highest_price": 112.33000091552735,
-    "lowest_price": 112.17999938964844,
-    "atr_entry": 1.119286128452846,
-    "catalyst": "Crude prices have broken above $112 amid acute geopolitical disruptions in the Strait of Hormuz and intensifying Russia-Ukraine supply anxieties. The escalation in physical chokepoint risk premiums, combined with strong bullish momentum (1H EMA alignment), reinforces upward price continuation over the near term."
-  },
-  "last_signal": "LONG",
-  "last_pulse_time": 1792348699.637214,
+  "active_trade": null,
+  "last_signal": "EXIT",
+  "last_pulse_time": 1792384812.2088435,
   "last_news_hash": "",
   "basis_offset": 3.29,
   "trade_history": [
@@ -351,6 +340,22 @@
       "exit_time": "2026-10-16T16:37:48.615397",
       "pnl_pct": 2.04978544743064,
       "reason": "\ud83c\udfaf Take Profit Hit ($111.52 >= $111.40)"
+    },
+    {
+      "symbol": "BZ=F",
+      "type": "LONG",
+      "entry_price": 112.17999938964844,
+      "entry_time": "2026-10-18T22:21:10.329091",
+      "stop_loss": 111.07,
+      "take_profit": 114.98,
+      "highest_price": 112.33000091552735,
+      "lowest_price": 112.17999938964844,
+      "atr_entry": 1.119286128452846,
+      "catalyst": "Crude prices have broken above $112 amid acute geopolitical disruptions in the Strait of Hormuz and intensifying Russia-Ukraine supply anxieties. The escalation in physical chokepoint risk premiums, combined with strong bullish momentum (1H EMA alignment), reinforces upward price continuation over the near term.",
+      "exit_price": 111.02999786376954,
+      "exit_time": "2026-10-19T05:58:38.825934",
+      "pnl_pct": -1.0251395365803722,
+      "reason": "\ud83d\uded1 Stop Loss Triggered ($111.03 <= $111.07)"
     }
   ]
 }
