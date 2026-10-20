@@ -1,18 +1,18 @@
 {
   "active_trade": {
     "symbol": "BZ=F",
-    "type": "LONG",
-    "entry_price": 113.24999908447266,
-    "entry_time": "2026-10-20T06:37:00.805482",
-    "stop_loss": 113.38,
-    "take_profit": 114.89,
-    "highest_price": 114.35999969482423,
-    "lowest_price": 113.24999908447266,
-    "atr_entry": 0.6578570774623326,
-    "catalyst": "Escalating Middle Eastern geopolitical disruptions across key chokepoints like the Strait of Hormuz and targeted Saudi infrastructure attacks are rapidly expanding the risk premium. This structural supply threat aligns with aggressive technical momentum, propelling crude firmly higher despite mixed backward-looking headlines."
+    "type": "SHORT",
+    "entry_price": 112.1200018310547,
+    "entry_time": "2026-10-20T17:10:48.672487",
+    "stop_loss": 113.93,
+    "take_profit": 109.08,
+    "highest_price": 112.1200018310547,
+    "lowest_price": 112.09999755859376,
+    "atr_entry": 1.2142862592424666,
+    "catalyst": "Despite severe geopolitical headlines regarding Strait of Hormuz and infrastructure attacks, Brent trades lower at $112.12 with bearish 1H technical momentum, indicating that risk premiums are currently fully priced in or being faded by profit-taking."
   },
-  "last_signal": "LONG",
-  "last_pulse_time": 1792471688.8444817,
+  "last_signal": "SHORT",
+  "last_pulse_time": 1792503210.5068634,
   "last_news_hash": "",
   "basis_offset": 3.29,
   "trade_history": [
@@ -399,6 +399,38 @@
       "exit_time": "2026-10-20T06:31:57.640276",
       "pnl_pct": 0.5691412795072133,
       "reason": "\ud83d\uded1 Stop Loss Triggered ($113.09 <= $113.34)"
+    },
+    {
+      "symbol": "BZ=F",
+      "type": "LONG",
+      "entry_price": 113.24999908447266,
+      "entry_time": "2026-10-20T06:37:00.805482",
+      "stop_loss": 113.38,
+      "take_profit": 114.89,
+      "highest_price": 114.35999969482423,
+      "lowest_price": 113.24999908447266,
+      "atr_entry": 0.6578570774623326,
+      "catalyst": "Escalating Middle Eastern geopolitical disruptions across key chokepoints like the Strait of Hormuz and targeted Saudi infrastructure attacks are rapidly expanding the risk premium. This structural supply threat aligns with aggressive technical momentum, propelling crude firmly higher despite mixed backward-looking headlines.",
+      "exit_price": 113.34999755859376,
+      "exit_time": "2026-10-20T13:44:17.987621",
+      "pnl_pct": 0.08829887410992855,
+      "reason": "\ud83d\uded1 Stop Loss Triggered ($113.35 <= $113.38)"
+    },
+    {
+      "symbol": "BZ=F",
+      "type": "SHORT",
+      "entry_price": 110.30000213623048,
+      "entry_time": "2026-10-20T15:14:59.940367",
+      "stop_loss": 111.96,
+      "take_profit": 107.53,
+      "highest_price": 110.30000213623048,
+      "lowest_price": 110.30000213623048,
+      "atr_entry": 1.109285627092634,
+      "catalyst": "Despite sensationalized headlines regarding Middle East chokepoint risks and surging prices, CL=F has actually dropped 1.76% to $110.30 with a 1H RSI of 34.9 and bearish technical momentum, indicating that the geopolitical risk premium is currently being faded by physical market realities or profit-taking.",
+      "exit_price": 111.9899969482422,
+      "exit_time": "2026-10-20T16:32:05.912675",
+      "pnl_pct": -1.5321802169363719,
+      "reason": "\ud83d\uded1 Stop Loss Triggered ($111.99 >= $111.96)"
     }
   ]
 }
