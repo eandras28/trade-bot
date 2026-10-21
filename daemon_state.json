@@ -1,18 +1,18 @@
 {
   "active_trade": {
     "symbol": "BZ=F",
-    "type": "SHORT",
-    "entry_price": 112.1200018310547,
-    "entry_time": "2026-10-20T17:10:48.672487",
-    "stop_loss": 113.66,
-    "take_profit": 109.08,
-    "highest_price": 112.1200018310547,
-    "lowest_price": 112.09999755859376,
-    "atr_entry": 1.2142862592424666,
-    "catalyst": "Despite severe geopolitical headlines regarding Strait of Hormuz and infrastructure attacks, Brent trades lower at $112.12 with bearish 1H technical momentum, indicating that risk premiums are currently fully priced in or being faded by profit-taking."
+    "type": "LONG",
+    "entry_price": 112.95999816894532,
+    "entry_time": "2026-10-21T07:45:28.058028",
+    "stop_loss": 112.17,
+    "take_profit": 114.27,
+    "highest_price": 112.95999816894532,
+    "lowest_price": 112.95999816894532,
+    "atr_entry": 0.5257148742675781,
+    "catalyst": "Persistent transit threats in the Strait of Hormuz combined with consecutive US crude and product inventory draws are driving an expanding geopolitical risk premium and physical market tightening. Despite a minor intraday consolidation at elevated levels, underlying supply deficit risks strongly favor continuation to the upside."
   },
-  "last_signal": "SHORT",
-  "last_pulse_time": 1792526421.8030539,
+  "last_signal": "LONG",
+  "last_pulse_time": 1792557848.5177922,
   "last_news_hash": "",
   "basis_offset": 3.29,
   "trade_history": [
@@ -431,6 +431,38 @@
       "exit_time": "2026-10-20T16:32:05.912675",
       "pnl_pct": -1.5321802169363719,
       "reason": "\ud83d\uded1 Stop Loss Triggered ($111.99 >= $111.96)"
+    },
+    {
+      "symbol": "BZ=F",
+      "type": "SHORT",
+      "entry_price": 112.1200018310547,
+      "entry_time": "2026-10-20T17:10:48.672487",
+      "stop_loss": 113.27,
+      "take_profit": 109.08,
+      "highest_price": 112.1200018310547,
+      "lowest_price": 112.09999755859376,
+      "atr_entry": 1.2142862592424666,
+      "catalyst": "Despite severe geopolitical headlines regarding Strait of Hormuz and infrastructure attacks, Brent trades lower at $112.12 with bearish 1H technical momentum, indicating that risk premiums are currently fully priced in or being faded by profit-taking.",
+      "exit_price": 113.59000305175782,
+      "exit_time": "2026-10-21T04:49:15.935615",
+      "pnl_pct": -1.311096322419046,
+      "reason": "\ud83d\uded1 Stop Loss Triggered ($113.59 >= $113.27)"
+    },
+    {
+      "symbol": "BZ=F",
+      "type": "LONG",
+      "entry_price": 113.58000091552735,
+      "entry_time": "2026-10-21T04:54:19.064887",
+      "stop_loss": 113.16,
+      "take_profit": 115.53,
+      "highest_price": 113.8700018310547,
+      "lowest_price": 113.58000091552735,
+      "atr_entry": 0.7807153974260602,
+      "catalyst": "Crude is aggressively supported by severe geopolitical risk premiums stemming from Middle East chokepoint disruptions in the Strait of Hormuz, compounded by confirmed U.S. inventory drawdowns. This physical supply tightness aligns with the current bullish technical momentum, pushing prices above $113 despite conflicting demand noise.",
+      "exit_price": 112.84999755859376,
+      "exit_time": "2026-10-21T07:38:18.633820",
+      "pnl_pct": -0.6427217389058817,
+      "reason": "\ud83d\uded1 Stop Loss Triggered ($112.85 <= $113.16)"
     }
   ]
 }
