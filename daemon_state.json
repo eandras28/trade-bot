@@ -1,18 +1,18 @@
 {
   "active_trade": {
     "symbol": "BZ=F",
-    "type": "LONG",
-    "entry_price": 112.95999816894532,
-    "entry_time": "2026-10-21T07:45:28.058028",
-    "stop_loss": 112.17,
-    "take_profit": 114.27,
-    "highest_price": 112.95999816894532,
-    "lowest_price": 112.95999816894532,
-    "atr_entry": 0.5257148742675781,
-    "catalyst": "Persistent transit threats in the Strait of Hormuz combined with consecutive US crude and product inventory draws are driving an expanding geopolitical risk premium and physical market tightening. Despite a minor intraday consolidation at elevated levels, underlying supply deficit risks strongly favor continuation to the upside."
+    "type": "SHORT",
+    "entry_price": 112.44000152587891,
+    "entry_time": "2026-10-21T15:18:48.698519",
+    "stop_loss": 112.88,
+    "take_profit": 110.45,
+    "highest_price": 112.44000152587891,
+    "lowest_price": 111.51000122070313,
+    "atr_entry": 0.7949987139020648,
+    "catalyst": "Despite lingering geopolitical risk premiums in the Strait of Hormuz and initial price spikes, physical supply from the Persian Gulf is increasing and technical momentum remains bearish with prices retreating from session highs, indicating fading upside traction over the 1-5 day horizon."
   },
-  "last_signal": "LONG",
-  "last_pulse_time": 1792557848.5177922,
+  "last_signal": "SHORT",
+  "last_pulse_time": 1792590418.0234063,
   "last_news_hash": "",
   "basis_offset": 3.29,
   "trade_history": [
@@ -463,6 +463,22 @@
       "exit_time": "2026-10-21T07:38:18.633820",
       "pnl_pct": -0.6427217389058817,
       "reason": "\ud83d\uded1 Stop Loss Triggered ($112.85 <= $113.16)"
+    },
+    {
+      "symbol": "BZ=F",
+      "type": "LONG",
+      "entry_price": 112.95999816894532,
+      "entry_time": "2026-10-21T07:45:28.058028",
+      "stop_loss": 112.17,
+      "take_profit": 114.27,
+      "highest_price": 112.95999816894532,
+      "lowest_price": 112.95999816894532,
+      "atr_entry": 0.5257148742675781,
+      "catalyst": "Persistent transit threats in the Strait of Hormuz combined with consecutive US crude and product inventory draws are driving an expanding geopolitical risk premium and physical market tightening. Despite a minor intraday consolidation at elevated levels, underlying supply deficit risks strongly favor continuation to the upside.",
+      "exit_price": 111.77999786376954,
+      "exit_time": "2026-10-21T13:47:04.809692",
+      "pnl_pct": -1.044617850835079,
+      "reason": "\ud83d\uded1 Stop Loss Triggered ($111.78 <= $112.17)"
     }
   ]
 }
