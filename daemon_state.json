@@ -2,17 +2,17 @@
   "active_trade": {
     "symbol": "BZ=F",
     "type": "LONG",
-    "entry_price": 114.05999664306641,
-    "entry_time": "2026-10-22T04:47:06.584589",
-    "stop_loss": 114.77,
-    "take_profit": 115.99,
-    "highest_price": 115.70999816894532,
-    "lowest_price": 114.05999664306641,
-    "atr_entry": 0.7721421377999442,
-    "catalyst": "Despite reports of normal flows through the Strait of Hormuz and mixed headlines, persistent Houthi and Iranian attacks on regional energy infrastructure keep geopolitical risk premiums elevated. With CL=F holding resiliently at $114.06 under bullish technical momentum, underlying physical tightness and ongoing supply vulnerabilities outweigh temporary bearish flow news."
+    "entry_price": 115.59000305175782,
+    "entry_time": "2026-10-22T17:12:13.516680",
+    "stop_loss": 114.68,
+    "take_profit": 117.47,
+    "highest_price": 115.84000305175782,
+    "lowest_price": 115.59000305175782,
+    "atr_entry": 0.7521422249930245,
+    "catalyst": "Despite mixed media reports regarding Strait of Hormuz flows and US stockpiles, crude remains resilient at $115.59 with strong technical momentum (1H RSI 62.3), indicating that geopolitical risk premiums and physical demand continue to support the upside."
   },
   "last_signal": "LONG",
-  "last_pulse_time": 1792644116.7971659,
+  "last_pulse_time": 1792676971.8018715,
   "last_news_hash": "",
   "basis_offset": 3.29,
   "trade_history": [
@@ -511,6 +511,38 @@
       "exit_time": "2026-10-22T04:42:02.912784",
       "pnl_pct": -1.1881574682274676,
       "reason": "\ud83d\uded1 Stop Loss Triggered ($114.12 >= $114.12)"
+    },
+    {
+      "symbol": "BZ=F",
+      "type": "LONG",
+      "entry_price": 114.05999664306641,
+      "entry_time": "2026-10-22T04:47:06.584589",
+      "stop_loss": 114.81,
+      "take_profit": 115.99,
+      "highest_price": 115.70999816894532,
+      "lowest_price": 114.05999664306641,
+      "atr_entry": 0.7721421377999442,
+      "catalyst": "Despite reports of normal flows through the Strait of Hormuz and mixed headlines, persistent Houthi and Iranian attacks on regional energy infrastructure keep geopolitical risk premiums elevated. With CL=F holding resiliently at $114.06 under bullish technical momentum, underlying physical tightness and ongoing supply vulnerabilities outweigh temporary bearish flow news.",
+      "exit_price": 114.7700033569336,
+      "exit_time": "2026-10-22T14:00:03.193239",
+      "pnl_pct": 0.622485301388397,
+      "reason": "\ud83d\uded1 Stop Loss Triggered ($114.77 <= $114.81)"
+    },
+    {
+      "symbol": "BZ=F",
+      "type": "LONG",
+      "entry_price": 114.74999908447266,
+      "entry_time": "2026-10-22T14:05:15.747835",
+      "stop_loss": 114.33,
+      "take_profit": 116.35,
+      "highest_price": 115.29,
+      "lowest_price": 114.74999908447266,
+      "atr_entry": 0.638571058000837,
+      "catalyst": "Despite mixed headlines regarding Strait of Hormuz transit and mixed futures closes, CL=F is trading robustly at $114.75 (+2.57%) with strong bullish momentum (1H EMA alignment), indicating underlying physical demand and stubborn geopolitical risk premiums overriding bearish flow reports.",
+      "exit_price": 114.19000152587891,
+      "exit_time": "2026-10-22T15:29:10.289030",
+      "pnl_pct": -0.48801530550036043,
+      "reason": "\ud83d\uded1 Stop Loss Triggered ($114.19 <= $114.33)"
     }
   ]
 }
