@@ -1,18 +1,18 @@
 {
   "active_trade": {
     "symbol": "BZ=F",
-    "type": "SHORT",
-    "entry_price": 112.77999786376954,
-    "entry_time": "2026-10-21T20:45:54.720873",
-    "stop_loss": 114.12,
-    "take_profit": 110.12,
-    "highest_price": 112.77999786376954,
-    "lowest_price": 112.69000152587891,
-    "atr_entry": 1.0649986267089844,
-    "catalyst": "Crude oil hovers near $112.78 as persistent geopolitical risk premiums in the Strait of Hormuz offset reports of steady physical flows and mixed inventory data. Bearish short-term momentum aligns with choppy, range-bound consolidation as the market weighs supply recovery against lingering Middle East supply threats."
+    "type": "LONG",
+    "entry_price": 114.05999664306641,
+    "entry_time": "2026-10-22T04:47:06.584589",
+    "stop_loss": 114.77,
+    "take_profit": 115.99,
+    "highest_price": 115.70999816894532,
+    "lowest_price": 114.05999664306641,
+    "atr_entry": 0.7721421377999442,
+    "catalyst": "Despite reports of normal flows through the Strait of Hormuz and mixed headlines, persistent Houthi and Iranian attacks on regional energy infrastructure keep geopolitical risk premiums elevated. With CL=F holding resiliently at $114.06 under bullish technical momentum, underlying physical tightness and ongoing supply vulnerabilities outweigh temporary bearish flow news."
   },
-  "last_signal": "SHORT",
-  "last_pulse_time": 1792613396.574088,
+  "last_signal": "LONG",
+  "last_pulse_time": 1792644116.7971659,
   "last_news_hash": "",
   "basis_offset": 3.29,
   "trade_history": [
@@ -495,6 +495,22 @@
       "exit_time": "2026-10-21T20:10:00.794696",
       "pnl_pct": -0.4357860700106399,
       "reason": "\ud83d\uded1 Stop Loss Triggered ($112.93 >= $112.88)"
+    },
+    {
+      "symbol": "BZ=F",
+      "type": "SHORT",
+      "entry_price": 112.77999786376954,
+      "entry_time": "2026-10-21T20:45:54.720873",
+      "stop_loss": 113.85,
+      "take_profit": 110.12,
+      "highest_price": 112.77999786376954,
+      "lowest_price": 112.69000152587891,
+      "atr_entry": 1.0649986267089844,
+      "catalyst": "Crude oil hovers near $112.78 as persistent geopolitical risk premiums in the Strait of Hormuz offset reports of steady physical flows and mixed inventory data. Bearish short-term momentum aligns with choppy, range-bound consolidation as the market weighs supply recovery against lingering Middle East supply threats.",
+      "exit_price": 114.1200018310547,
+      "exit_time": "2026-10-22T04:42:02.912784",
+      "pnl_pct": -1.1881574682274676,
+      "reason": "\ud83d\uded1 Stop Loss Triggered ($114.12 >= $114.12)"
     }
   ]
 }
