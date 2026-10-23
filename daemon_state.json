@@ -1,7 +1,18 @@
 {
-  "active_trade": null,
-  "last_signal": "EXIT",
-  "last_pulse_time": 1792730836.8286965,
+  "active_trade": {
+    "symbol": "BZ=F",
+    "type": "SHORT",
+    "entry_price": 115.41999725341798,
+    "entry_time": "2026-10-23T16:01:50.825966",
+    "stop_loss": 116.1,
+    "take_profit": 112.6,
+    "highest_price": 115.41999725341798,
+    "lowest_price": 114.42999938964844,
+    "atr_entry": 1.129286629813058,
+    "catalyst": "Despite prices holding above $115/bbl due to lingering geopolitical fear premiums from potential US-Iran strikes, physical Mideast crude prices are softening and Persian Gulf flows are normalizing. This points to a divergence where fading physical supply pressures will likely weigh on overextended futures over the next 1-5 sessions."
+  },
+  "last_signal": "SHORT",
+  "last_pulse_time": 1792762025.8483996,
   "last_news_hash": "",
   "basis_offset": 3.29,
   "trade_history": [
@@ -564,6 +575,22 @@
       "exit_time": "2026-10-23T07:46:24.614053",
       "pnl_pct": -4.043585585817619,
       "reason": "\ud83d\uded1 Stop Loss Triggered ($112.72 <= $116.79)"
+    },
+    {
+      "symbol": "BZ=F",
+      "type": "SHORT",
+      "entry_price": 113.98000244140626,
+      "entry_time": "2026-10-23T13:27:20.383868",
+      "stop_loss": 115.39,
+      "take_profit": 111.3,
+      "highest_price": 113.98000244140626,
+      "lowest_price": 113.83000091552735,
+      "atr_entry": 1.0728579929896764,
+      "catalyst": "Despite five-month highs driven by US-Iran war rhetoric and supply disruption fears, prices have pulled back to $113.98 (-0.91%) with bearish 1H momentum as actual flows through the Strait of Hormuz remain uninterrupted.",
+      "exit_price": 115.49999908447266,
+      "exit_time": "2026-10-23T15:56:47.616203",
+      "pnl_pct": -1.3335643187477482,
+      "reason": "\ud83d\uded1 Stop Loss Triggered ($115.50 >= $115.39)"
     }
   ]
 }
