@@ -4,15 +4,15 @@
     "type": "LONG",
     "entry_price": 115.59000305175782,
     "entry_time": "2026-10-22T17:12:13.516680",
-    "stop_loss": 114.68,
+    "stop_loss": 115.6,
     "take_profit": 117.47,
-    "highest_price": 115.84000305175782,
+    "highest_price": 116.73000244140626,
     "lowest_price": 115.59000305175782,
     "atr_entry": 0.7521422249930245,
     "catalyst": "Despite mixed media reports regarding Strait of Hormuz flows and US stockpiles, crude remains resilient at $115.59 with strong technical momentum (1H RSI 62.3), indicating that geopolitical risk premiums and physical demand continue to support the upside."
   },
   "last_signal": "LONG",
-  "last_pulse_time": 1792676971.8018715,
+  "last_pulse_time": 1792699634.4107742,
   "last_news_hash": "",
   "basis_offset": 3.29,
   "trade_history": [
