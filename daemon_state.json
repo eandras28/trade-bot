@@ -4,15 +4,15 @@
     "type": "SHORT",
     "entry_price": 115.41999725341798,
     "entry_time": "2026-10-23T16:01:50.825966",
-    "stop_loss": 116.1,
+    "stop_loss": 114.89,
     "take_profit": 112.6,
     "highest_price": 115.41999725341798,
-    "lowest_price": 114.42999938964844,
+    "lowest_price": 113.56999877929688,
     "atr_entry": 1.129286629813058,
     "catalyst": "Despite prices holding above $115/bbl due to lingering geopolitical fear premiums from potential US-Iran strikes, physical Mideast crude prices are softening and Persian Gulf flows are normalizing. This points to a divergence where fading physical supply pressures will likely weigh on overextended futures over the next 1-5 sessions."
   },
   "last_signal": "SHORT",
-  "last_pulse_time": 1792933880.1860785,
+  "last_pulse_time": 1792954957.2976727,
   "last_news_hash": "",
   "basis_offset": 3.29,
   "trade_history": [
