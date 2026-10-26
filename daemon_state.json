@@ -2,17 +2,17 @@
   "active_trade": {
     "symbol": "BZ=F",
     "type": "SHORT",
-    "entry_price": 115.41999725341798,
-    "entry_time": "2026-10-23T16:01:50.825966",
-    "stop_loss": 114.89,
-    "take_profit": 112.6,
-    "highest_price": 115.41999725341798,
-    "lowest_price": 113.56999877929688,
-    "atr_entry": 1.129286629813058,
-    "catalyst": "Despite prices holding above $115/bbl due to lingering geopolitical fear premiums from potential US-Iran strikes, physical Mideast crude prices are softening and Persian Gulf flows are normalizing. This points to a divergence where fading physical supply pressures will likely weigh on overextended futures over the next 1-5 sessions."
+    "entry_price": 113.80000213623048,
+    "entry_time": "2026-10-26T08:05:29.855007",
+    "stop_loss": 114.16,
+    "take_profit": 112.33,
+    "highest_price": 113.80000213623048,
+    "lowest_price": 113.30000213623048,
+    "atr_entry": 0.5892857142857143,
+    "catalyst": "Unexpected inventory builds or weak refinery demand pressuring prices."
   },
   "last_signal": "SHORT",
-  "last_pulse_time": 1792954957.2976727,
+  "last_pulse_time": 1792989865.5398486,
   "last_news_hash": "",
   "basis_offset": 3.29,
   "trade_history": [
@@ -591,6 +591,22 @@
       "exit_time": "2026-10-23T15:56:47.616203",
       "pnl_pct": -1.3335643187477482,
       "reason": "\ud83d\uded1 Stop Loss Triggered ($115.50 >= $115.39)"
+    },
+    {
+      "symbol": "BZ=F",
+      "type": "SHORT",
+      "entry_price": 115.41999725341798,
+      "entry_time": "2026-10-23T16:01:50.825966",
+      "stop_loss": 113.62,
+      "take_profit": 112.6,
+      "highest_price": 115.41999725341798,
+      "lowest_price": 112.79,
+      "atr_entry": 1.129286629813058,
+      "catalyst": "Despite prices holding above $115/bbl due to lingering geopolitical fear premiums from potential US-Iran strikes, physical Mideast crude prices are softening and Persian Gulf flows are normalizing. This points to a divergence where fading physical supply pressures will likely weigh on overextended futures over the next 1-5 sessions.",
+      "exit_price": 113.6399984741211,
+      "exit_time": "2026-10-26T08:00:28.196066",
+      "pnl_pct": 1.5421927063372576,
+      "reason": "\ud83d\uded1 Stop Loss Triggered ($113.64 >= $113.62)"
     }
   ]
 }
