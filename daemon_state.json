@@ -1,7 +1,18 @@
 {
-  "active_trade": null,
-  "last_signal": "EXIT",
-  "last_pulse_time": 1793027474.8123577,
+  "active_trade": {
+    "symbol": "BZ=F",
+    "type": "SHORT",
+    "entry_price": 113.41999725341798,
+    "entry_time": "2026-10-27T00:21:37.011665",
+    "stop_loss": 114.4,
+    "take_profit": 111.54,
+    "highest_price": 113.41999725341798,
+    "lowest_price": 113.2399969482422,
+    "atr_entry": 0.752143314906529,
+    "catalyst": "Unexpected inventory builds or weak refinery demand pressuring prices."
+  },
+  "last_signal": "SHORT",
+  "last_pulse_time": 1793048453.3695776,
   "last_news_hash": "",
   "basis_offset": 3.29,
   "trade_history": [
