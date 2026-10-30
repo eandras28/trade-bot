@@ -1,18 +1,7 @@
 {
-  "active_trade": {
-    "symbol": "BZ=F",
-    "type": "LONG",
-    "entry_price": 114.99999908447266,
-    "entry_time": "2026-10-30T06:45:13.755418",
-    "stop_loss": 115.11,
-    "take_profit": 117.03,
-    "highest_price": 116.34999755859376,
-    "lowest_price": 114.99999908447266,
-    "atr_entry": 0.812143053327288,
-    "catalyst": "Physical Brent crude fundamentals balanced with no sharp catalyst."
-  },
-  "last_signal": "LONG",
-  "last_pulse_time": 1793339100.4122381,
+  "active_trade": null,
+  "last_signal": "EXIT",
+  "last_pulse_time": 1793372535.0371103,
   "last_news_hash": "",
   "basis_offset": 3.29,
   "trade_history": [
@@ -719,6 +708,22 @@
       "exit_time": "2026-10-30T06:40:12.575386",
       "pnl_pct": -0.10450469879409749,
       "reason": "\ud83d\uded1 Stop Loss Triggered ($114.71 <= $114.77)"
+    },
+    {
+      "symbol": "BZ=F",
+      "type": "LONG",
+      "entry_price": 114.99999908447266,
+      "entry_time": "2026-10-30T06:45:13.755418",
+      "stop_loss": 115.98,
+      "take_profit": 117.03,
+      "highest_price": 117.1200018310547,
+      "lowest_price": 114.99999908447266,
+      "atr_entry": 0.812143053327288,
+      "catalyst": "Physical Brent crude fundamentals balanced with no sharp catalyst.",
+      "exit_price": 117.1200018310547,
+      "exit_time": "2026-10-30T16:22:56.143026",
+      "pnl_pct": 1.8434806638779135,
+      "reason": "\ud83c\udfaf Take Profit Hit ($117.12 >= $117.03)"
     }
   ]
 }
