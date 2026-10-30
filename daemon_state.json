@@ -2,17 +2,17 @@
   "active_trade": {
     "symbol": "BZ=F",
     "type": "LONG",
-    "entry_price": 114.83000091552735,
-    "entry_time": "2026-10-29T21:12:20.460684",
-    "stop_loss": 113.95,
-    "take_profit": 116.87,
-    "highest_price": 114.91000274658204,
-    "lowest_price": 114.83000091552735,
-    "atr_entry": 0.8142847333635602,
-    "catalyst": "Prompt supply tightening or geopolitical shipping risks dominating."
+    "entry_price": 114.99999908447266,
+    "entry_time": "2026-10-30T06:45:13.755418",
+    "stop_loss": 115.11,
+    "take_profit": 117.03,
+    "highest_price": 116.34999755859376,
+    "lowest_price": 114.99999908447266,
+    "atr_entry": 0.812143053327288,
+    "catalyst": "Physical Brent crude fundamentals balanced with no sharp catalyst."
   },
   "last_signal": "LONG",
-  "last_pulse_time": 1793308037.3852985,
+  "last_pulse_time": 1793339100.4122381,
   "last_news_hash": "",
   "basis_offset": 3.29,
   "trade_history": [
@@ -703,6 +703,22 @@
       "exit_time": "2026-10-29T21:07:18.418605",
       "pnl_pct": -1.368777016539714,
       "reason": "\ud83d\uded1 Stop Loss Triggered ($114.79 >= $114.32)"
+    },
+    {
+      "symbol": "BZ=F",
+      "type": "LONG",
+      "entry_price": 114.83000091552735,
+      "entry_time": "2026-10-29T21:12:20.460684",
+      "stop_loss": 114.77,
+      "take_profit": 116.87,
+      "highest_price": 115.66999725341798,
+      "lowest_price": 114.83000091552735,
+      "atr_entry": 0.8142847333635602,
+      "catalyst": "Prompt supply tightening or geopolitical shipping risks dominating.",
+      "exit_price": 114.70999816894532,
+      "exit_time": "2026-10-30T06:40:12.575386",
+      "pnl_pct": -0.10450469879409749,
+      "reason": "\ud83d\uded1 Stop Loss Triggered ($114.71 <= $114.77)"
     }
   ]
 }
