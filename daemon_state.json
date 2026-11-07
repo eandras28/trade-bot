@@ -4,15 +4,15 @@
     "type": "SHORT",
     "entry_price": 101.77999786376954,
     "entry_time": "2026-11-06T19:36:10.172326",
-    "stop_loss": 103.32,
+    "stop_loss": 102.68,
     "take_profit": 98.9,
     "highest_price": 101.77999786376954,
-    "lowest_price": 101.59000305175782,
+    "lowest_price": 100.99999908447266,
     "atr_entry": 1.1507148742675781,
     "catalyst": "Unexpected inventory builds or weak refinery demand pressuring prices."
   },
   "last_signal": "SHORT",
-  "last_pulse_time": 1793980502.0831869,
+  "last_pulse_time": 1794000548.4856246,
   "last_news_hash": "",
   "basis_offset": 3.29,
   "trade_history": [
